@@ -1,8 +1,6 @@
-package main;
-
 import java.util.List;
 
-//main.BankAccount class
+//BankAccount class
 public class BankAccount {
     public long accountNr;
     private double balance;
