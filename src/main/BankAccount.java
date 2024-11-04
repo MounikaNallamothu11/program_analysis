@@ -1,11 +1,14 @@
-import java.util.ArrayList;
+package main;
+
 import java.util.List;
 
-//BankAccount class
+//main.BankAccount class
 public class BankAccount {
+    public long accountNr;
     private double balance;
 
-    public BankAccount(double initialBalance) {
+    public BankAccount(long accountNr, double initialBalance) {
+        this.accountNr = accountNr;
         this.balance = initialBalance;
     }
 
@@ -54,8 +57,12 @@ public class BankAccount {
         return balance; // Returns the current balance
     }
 
-    private void withdraw(double amount) {
+    public void withdraw(double amount) {
         balance -= amount; // Withdraws the specified amount
+    }
+
+    public long getAccountNumber() {
+        return accountNr;
     }
 }
 
