@@ -1,0 +1,15 @@
+{
+    "Deposit": [
+        "deposit"
+    ],
+    "TransferSuccess": [
+        "transfer"
+    ],
+    "TransferInsufficientFunds": [
+        "transfer"
+    ],
+    "CalculateInterestDivideByZero": [],
+    "SumPositiveBalances": [
+        "sumPositiveBalances"
+    ]
+}
