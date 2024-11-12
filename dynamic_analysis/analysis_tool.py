@@ -102,9 +102,17 @@ class DynamicAnalysis:
 
 # Usage
 if __name__ == "__main__":
-    # Paths to JSON and Test files
-    bank_account_json_path = 'java/out/json/BankAccount.json'  # Path to your BankAccount.json
-    test_file_path = 'java/test/BankAccountTest.java'  # Path to your BankAccountTest.java file
+
+    version = "Original"  # Original or Modified
+
+    if version == "Original":
+        # Paths to JSON and Test files
+        bank_account_json_path = 'java/original/out/json/BankAccount.json'  # Path to your BankAccount.json
+        test_file_path = 'java/original/test/BankAccountTest.java'  # Path to your BankAccountTest.java file
+    else:
+        # Paths to JSON and Test files
+        bank_account_json_path = 'java/modified/out/json/BankAccount.json'  # Path to your BankAccount.json
+        test_file_path = 'java/modified/test/BankAccountTest.java'  # Path to your BankAccountTest.java file
 
     # Create DynamicAnalysis instance
     analyzer = DynamicAnalysis(bank_account_json_path)

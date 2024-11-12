@@ -5,7 +5,7 @@ import os
 
 class ChangeDetector:
     
-    def __init__(self, old_java_file_path: str = 'java/src/BankAccount.java', new_java_file_path: str = 'java_changed/src/BankAccount.java'):
+    def __init__(self, old_java_file_path: str = 'java/original/src/BankAccount.java', new_java_file_path: str = 'java/modified/src/BankAccount.java'):
         """
         Initialize the ChangeDetector object with the paths to the old and new Java files
         """

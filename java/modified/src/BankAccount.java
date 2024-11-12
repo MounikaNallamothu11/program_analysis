@@ -23,7 +23,6 @@ public class BankAccount {
     public String transfer(double amount, BankAccount destinationAccount) {
         if (amount <= balance) {
             withdraw(amount);
-            destinationAccount.deposit(amount);
             return "Transfer successful. New balance: " + balance;
         } else {
             return "Insufficient funds for transfer. Current balance: " + balance;
@@ -34,6 +33,9 @@ public class BankAccount {
     public double calculateInterest(int years) {
         if (years == 0) {
             throw new ArithmeticException("Cannot divide by zero.");
+        }
+        if (balance <= 200) {
+            throw new ArithmeticException("Balance is too low for interest calculation.");
         }
         return balance / years; // Calculates interest based on the number of years
     }
@@ -48,7 +50,16 @@ public class BankAccount {
                 total += 0; // Optional, as it's redundant
             }
         }
+        System.out.println("Total: " + total);
         return total;
+    }
+
+    public void test() {
+        return;
+    }
+
+    public void test2() {
+        return;
     }
 
     public double getBalance() {
@@ -63,4 +74,3 @@ public class BankAccount {
         return accountNr;
     }
 }
-
