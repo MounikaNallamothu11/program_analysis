@@ -10,11 +10,6 @@ public class BankAccount {
         this.balance = initialBalance;
     }
 
-    // 1. Function that Calls Another Function
-    public void deposit(double amount) {
-        balance += add(amount);
-    }
-
     private double add(double amount) {
         return amount; // Simply returns the amount to be added
     }
@@ -35,6 +30,9 @@ public class BankAccount {
         if (years == 0) {
             throw new ArithmeticException("Cannot divide by zero.");
         }
+        if (balance <= 200) {
+            throw new ArithmeticException("Balance is too low for interest calculation.");
+        }
         return balance / years; // Calculates interest based on the number of years
     }
 
@@ -48,7 +46,16 @@ public class BankAccount {
                 total += 0; // Optional, as it's redundant
             }
         }
+        System.out.println("Total: " + total);
         return total;
+    }
+
+    public void test() {
+        return;
+    }
+
+    public void test2() {
+        return;
     }
 
     public double getBalance() {
@@ -57,9 +64,5 @@ public class BankAccount {
 
     public void withdraw(double amount) {
         balance -= amount; // Withdraws the specified amount
-    }
-
-    public long getAccountNumber() {
-        return accountNr;
     }
 }
