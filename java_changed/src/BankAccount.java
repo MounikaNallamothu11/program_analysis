@@ -1,3 +1,5 @@
+package java_changed.src;
+
 import java.util.List;
 
 //BankAccount class
@@ -18,7 +20,6 @@ public class BankAccount {
     public String transfer(double amount, BankAccount destinationAccount) {
         if (amount <= balance) {
             withdraw(amount);
-            destinationAccount.deposit(amount);
             return "Transfer successful. New balance: " + balance;
         } else {
             return "Insufficient funds for transfer. Current balance: " + balance;
