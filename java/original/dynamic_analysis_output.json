@@ -1,0 +1,39 @@
+[
+    {
+        "test_method": "testTransferSuccess",
+        "calls": [
+            "add",
+            "withdraw",
+            "getBalance",
+            "deposit",
+            "transfer"
+        ]
+    },
+    {
+        "test_method": "testTransferInsufficientFunds",
+        "calls": [
+            "transfer"
+        ]
+    },
+    {
+        "test_method": "testSumPositiveBalances",
+        "calls": [
+            "sumPositiveBalances",
+            "getBalance"
+        ]
+    },
+    {
+        "test_method": "testDeposit",
+        "calls": [
+            "deposit",
+            "add",
+            "getBalance"
+        ]
+    },
+    {
+        "test_method": "testCalculateInterestDivideByZero",
+        "calls": [
+            "calculateInterest"
+        ]
+    }
+]

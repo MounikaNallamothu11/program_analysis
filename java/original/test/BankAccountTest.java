@@ -27,7 +27,8 @@ public class BankAccountTest {
         BankAccount sourceAccount = new BankAccount(1, 100);
         BankAccount destinationAccount = new BankAccount(2, 50);
         String result = sourceAccount.transfer(150, destinationAccount);
-        assertEquals("Insufficient funds for transfer. Current balance: 100.0", result);
+        assertEquals("Insufficient funds for transfer. Current balance: 100.0",
+                result);
     }
 
     @Test
