@@ -22,7 +22,6 @@ class ChangeDetector:
         lines = java_code.splitlines()
         current_class = None
 
-
         inside_method = False
         method_name = ""
         method_signature = ""
@@ -34,7 +33,6 @@ class ChangeDetector:
             class_match = class_regex.search(line)
             if class_match:
                 current_class = class_match.group(1)
-
 
             method_match = method_regex.search(line)
             if method_match:
@@ -60,9 +58,9 @@ class ChangeDetector:
         return elements
 
 
-    def detect_changes_in_java_code(self, printer: bool = False, showBodies: bool = False) -> List[List[str]]:
+    def detect_changes_in_java_code(self, printer: bool = False, showBodies: bool = False) -> Tuple[set, set, set]:
         """
-        Return a list of affected methods, new methods, and removed methods
+        Return sets of affected methods, new methods, and removed methods.
         """
         print("\nComparing Java code versions...\n") if printer else None
 
@@ -70,18 +68,19 @@ class ChangeDetector:
         old_elements = self.parse_java_elements(self.old_java_code)
         new_elements = self.parse_java_elements(self.new_java_code)
 
-        affected_methods = []
+        affected_methods = set()
 
         print("\nModified methods:\n---------------------------------------------------------------------------------------------------------") if printer else None
         for method_key, (old_signature, old_body) in old_elements.items():
             if method_key in new_elements:
                 new_signature, new_body = new_elements[method_key]
                 if old_body != new_body:
-                    affected_methods.append(method_key)
+                    affected_methods.add(method_key)
                     print(f"Modified method: {method_key} | Old Signature: {old_signature} | New Signature: {new_signature}") if printer else None
                     if showBodies:
                         print(f"\nOld Body:\n----------------\n{old_body}\n") if printer else None
                         print(f"New Body:\n----------------\n{new_body}\n\n") if printer else None
+
         # Check for added and removed methods
         added_methods = set(new_elements.keys()) - set(old_elements.keys())
         removed_methods = set(old_elements.keys()) - set(new_elements.keys())
@@ -105,9 +104,10 @@ class ChangeDetector:
                 print(f"Removed method: {method_key} | Signature: {old_elements[method_key][0]} | Body:\n{old_elements[method_key][1]}\n") if printer else None
             else:
                 print(f"Removed method: {method_key} | Signature: {old_elements[method_key][0]}") if printer else None
-        
+
         print("\n") if printer else None
-        return [list(affected_methods), list(added_methods), list(removed_methods)]
+        return affected_methods, added_methods, removed_methods
+
 
 
     def read_java_file(self, file_path: str) -> str:
