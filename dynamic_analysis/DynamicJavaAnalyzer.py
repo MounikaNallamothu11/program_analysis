@@ -3,16 +3,19 @@ from subprocess import Popen, PIPE
 import re
 import shutil
 import json
+import subprocess
 
 class DynamicJavaAnalyzer:
-    def __init__(self, class_under_test_path, test_class_path, project_path):
+    def __init__(self, class_under_test_path, test_class_path, project_path, static_analysis_results):
         self.class_under_test_path = os.path.abspath(f"{class_under_test_path}")  # The class to be tested
         self.test_class_path = os.path.abspath(f"{test_class_path}")  # The JUnit test class path
         self.project_path = project_path
+        self.static_analysis_results = static_analysis_results
         # Backup file path for restoring the original class after modifications
         self.backup_class_path = os.path.abspath(f"{class_under_test_path}.bak")
         self.backup_test_path = os.path.abspath(f"{test_class_path}.bak")
         self.class_name = os.path.basename(self.class_under_test_path).split('.')[0]
+        self.original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"  # Path to the original JSON mapping
 
     def backup_original_file(self,path,backup):
         """
@@ -49,7 +52,7 @@ class DynamicJavaAnalyzer:
                 # If we found a method, insert the print statement immediately after the opening brace '{'
                 method_name = method_match.group(0).split('(')[0].split()[-1]  # Extract method name
                 modified_code.append(line)  # Add method declaration
-                modified_code.append(f'        System.out.println("CALL {method_name}");\n')  # Insert print inside method body
+                modified_code.append(f'System.out.println("CALL {method_name}");\n')  # Insert print inside method body
                 in_method = True
             elif in_method:
                 # Check for the closing brace '}' for the current method
@@ -65,27 +68,54 @@ class DynamicJavaAnalyzer:
         with open(path, 'w') as file:
             file.writelines(modified_code)
 
-    def compile_and_run_tests(self):
+
+    def compile_and_run_tests(self, test_methods=None):
         """
         Compiles and runs the modified class under test, along with the JUnit test class, using Maven.
-        """       
-        # Navigate to the Maven project directory
+        If test_methods is provided, only those tests will be run.
+        """
+        current_directory = os.getcwd()
         os.chdir(self.project_path)
 
-        args = ['mvn','clean', 'test']
-        process = Popen(args,stdout=PIPE, stderr=PIPE, shell=True)
-        stdout, stderr = process.communicate()
+        try:
+            if test_methods:
+                # Construct the Maven command to run specific test methods
+                # Extract unique test methods
+                combined_tests = "+".join(sorted(set(test_methods)))
 
-        # Check for compilation or test run errors
-        if process.returncode != 0:
-            print("Maven build and test failed with errors:")
-            print(stderr.decode())
-            return None
+                maven_command = ['mvn', 'test', f'-Dtest=BankAccountTest#{combined_tests}']
+                print(f"Running combined tests: {combined_tests}")
 
-        # Return the stdout (which contains the test results) for further analysis
-        print(stdout.decode())
-        return stdout.decode()
-    
+                try:
+                    # Run the Maven command and capture output
+                    result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
+                    print(result.stdout)  # Display Maven output
+                except subprocess.CalledProcessError as e:
+                    print(f"Error running combined tests: {e.stderr}")
+            else:
+                # Default Maven command to run all tests
+                print("Running all tests...")
+                maven_command = ['mvn', 'clean', 'test']
+
+            # Execute the Maven command
+            result = subprocess.run(
+                maven_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+
+            if result.returncode != 0:
+                print("Maven build and test failed with errors:")
+                print(result.stderr)
+                return None
+
+            # Return the stdout (test results) for further analysis
+            print(result.stdout)
+            return result.stdout
+
+        finally:
+            self.cleanup()
+            os.chdir(current_directory)
+
+
     def parse_output(self, output):
         """
         Parses the output from the test run to associate each test with the methods it calls.
@@ -118,51 +148,16 @@ class DynamicJavaAnalyzer:
         """
         if os.path.exists(path):
             os.remove(path)
-    
-    def save_results_to_json(self, results):
+
+    def cleanup(self):
         """
-        Saves the analysis results to a JSON file named 'dynamic_analysis_output.json'.
+        Restores the original class and test files and deletes their backups.
         """
-        formatted_results = [
-            {"test_method": test_method, "calls": calls}
-            for test_method, calls in results.items()
-        ]
-
-        output_file = 'dynamic_analysis_output.json'
-        with open(output_file, 'w') as f:
-            json.dump(formatted_results, f, indent=4)
-        
-        print(f"Results saved to {output_file}")
-
-    def analyze(self):
-        """
-        Full analysis pipeline: backup, instrument, compile, run, and analyze output, then restore original file.
-        """
-        print("Backing up the original class file...")
-        self.backup_original_file(self.class_under_test_path,self.backup_class_path)
-        
-        print("Backing up the original test file...")
-        self.backup_original_file(self.test_class_path,self.backup_test_path)
-
-        print("Inserting logging statements into the class under test...")
-        self.insert_logging_statements(self.class_under_test_path)
-        
-        print("Inserting logging statements into the Test...")
-        self.insert_logging_statements(self.test_class_path)
-
-        print("Compiling and running modified Java code and test class...")
-        output = self.compile_and_run_tests()
-        if output is None:
-            return
-
-        print("Parsing output to determine method calls...")
-        method_calls = self.parse_output(output)
-
         print("Restoring the original class file...")
-        self.restore_original_file(self.class_under_test_path,self.backup_class_path)
-        
+        self.restore_original_file(self.class_under_test_path, self.backup_class_path)
+
         print("Restoring the original test file...")
-        self.restore_original_file(self.test_class_path,self.backup_test_path)
+        self.restore_original_file(self.test_class_path, self.backup_test_path)
 
         print("Deleting class backup file...")
         self.delete_backup(self.backup_class_path)
@@ -170,18 +165,108 @@ class DynamicJavaAnalyzer:
         print("Deleting test backup file...")
         self.delete_backup(self.backup_test_path)
 
-        print("Analysis complete.")
-        return method_calls
-    
+
+    def save_results_to_json(self, results):
+        # Reverse the mapping: call → test_methods
+        reversed_mapping = {}
+        for test_method, calls in results.items():
+            for call in calls:
+                if call not in reversed_mapping:
+                    reversed_mapping[call] = []
+                reversed_mapping[call].append(test_method)
+
+        # Save or print the JSON
+        with open(self.original_json_mapping_path, "w") as json_file:
+            json.dump(reversed_mapping, json_file, indent=4)
+
+        print(f"Results saved to {self.original_json_mapping_path}")
+        print(json.dumps(reversed_mapping, indent=4))
+
+
+    def load_existing_mapping(self):
+        """
+        Loads the existing JSON mapping (if it exists), or creates a new one.
+        """
+        original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"
+        if os.path.exists(original_json_mapping_path):
+            with open(original_json_mapping_path, 'r') as f:
+                return json.load(f)
+        else:
+            print("No existing JSON mapping found, creating a new one.")
+            return []  # Return an empty list if no mapping file exists
+
+    def analyze(self):
+        # Step 1: Backup original files
+        print("Backing up the original class file...")
+        self.backup_original_file(self.class_under_test_path, self.backup_class_path)
+
+        print("Backing up the original test file...")
+        self.backup_original_file(self.test_class_path, self.backup_test_path)
+
+        print(f"Current working directory: {os.getcwd()}")
+        original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"
+
+        # Step 2: Check if existing mapping is present, else create a new one
+        print(original_json_mapping_path)
+        if os.path.exists(original_json_mapping_path):
+            print("Existing mapping found. Loading the mapping...")
+            existing_mapping = self.load_existing_mapping()
+            method_calls = {}
+
+            if self.static_analysis_results:
+                print(f"Static analysis results found: {self.static_analysis_results}")
+                # If there are changes from static analysis, filter tests based on changed methods
+                changed_methods = set(self.static_analysis_results)
+
+                for call, test_methods in existing_mapping.items():
+                    if call in changed_methods:
+                        method_calls[call] = test_methods
+
+                if method_calls:
+                    # Only run the test cases related to changed methods
+                    print("Running tests for changed methods:", method_calls)
+                    test_methods_to_run = [test_method for test_methods in method_calls.values() for test_method in test_methods]
+                    output = self.compile_and_run_tests(test_methods_to_run)
+                    return self.parse_output(output) if output else None
+                else:
+                    # If no relevant test methods after static analysis, use the full mapping
+                    print("No static analysis results or no relevant changes. Using the full mapping.")
+                    return existing_mapping
+        else:
+             # If no existing mapping, create a new one by analyzing the code
+            print("No existing mapping found. Creating a new one...")
+
+            # If this is the first run, analyze the whole code
+            print("Inserting logging statements into the class under test...")
+            self.insert_logging_statements(self.class_under_test_path)
+
+            print("Inserting logging statements into the Test...")
+            self.insert_logging_statements(self.test_class_path)
+
+            print("Compiling and running modified Java code and test class...")
+            output = self.compile_and_run_tests()
+            if output is None:
+                return
+
+            print("Parsing output to determine method calls...")
+            method_calls = self.parse_output(output)
+
+            self.cleanup()
+
+            print("Analysis complete.")
+            self.save_results_to_json(method_calls)
+
+            return method_calls
 
 
 
 if __name__ == "__main__":
-    # Usage example:
+    # Static analysis results: List of methods that were changed (for example)
+    static_analysis_results = ["deposit", "withdraw"]  # Example changed methods
     class_under_test_path = "java/original/src/main/BankAccount.java"  # Path to the class that needs to be tested
     test_class_path = "java/original/test/BankAccountTest.java"  # Path to the JUnit test class
     project_path = "java/original"
-    analyzer = DynamicJavaAnalyzer(class_under_test_path, test_class_path,project_path)
+    analyzer = DynamicJavaAnalyzer(class_under_test_path, test_class_path,project_path,static_analysis_results)
     results = analyzer.analyze()
 
     if results:

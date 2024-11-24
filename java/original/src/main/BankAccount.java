@@ -62,4 +62,8 @@ public class BankAccount {
     public long getAccountNumber() {
         return accountNr;
     }
+
+    public String getAccountSummary() {
+        return "Account " + accountNr + " has a balance of " + balance;
+    }
 }
