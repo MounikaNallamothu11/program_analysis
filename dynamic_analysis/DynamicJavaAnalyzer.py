@@ -84,14 +84,14 @@ class DynamicJavaAnalyzer:
                 combined_tests = "+".join(sorted(set(test_methods)))
 
                 maven_command = ['mvn', 'test', f'-Dtest=BankAccountTest#{combined_tests}']
-                print(f"Running combined tests: {combined_tests}")
+                print(f"Running required tests: {combined_tests}")
 
                 try:
                     # Run the Maven command and capture output
                     result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
                     print(result.stdout)  # Display Maven output
                 except subprocess.CalledProcessError as e:
-                    print(f"Error running combined tests: {e.stderr}")
+                    print(f"Error running required tests: {e.stderr}")
             else:
                 # Default Maven command to run all tests
                 print("Running all tests...")
@@ -139,9 +139,9 @@ class DynamicJavaAnalyzer:
 
         # Convert sets back to lists to maintain the expected output format
         method_calls = {test: list(calls) for test, calls in method_calls.items()}
-        
+
         return method_calls
-    
+
     def delete_backup(self,path):
         """
         Deletes the backup file after the operation is complete.
@@ -195,8 +195,14 @@ class DynamicJavaAnalyzer:
             print("No existing JSON mapping found, creating a new one.")
             return []  # Return an empty list if no mapping file exists
 
+    def extract_method_name(self, full_name):
+        """
+        Extracts the method name from a fully qualified method name.
+        """
+        return full_name.split('.')[-1]
+
     def analyze(self):
-        # Step 1: Backup original files
+        # Backup original files
         print("Backing up the original class file...")
         self.backup_original_file(self.class_under_test_path, self.backup_class_path)
 
@@ -206,7 +212,7 @@ class DynamicJavaAnalyzer:
         print(f"Current working directory: {os.getcwd()}")
         original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"
 
-        # Step 2: Check if existing mapping is present, else create a new one
+        # Check if existing mapping is present, else create a new one
         print(original_json_mapping_path)
         if os.path.exists(original_json_mapping_path):
             print("Existing mapping found. Loading the mapping...")
@@ -216,24 +222,71 @@ class DynamicJavaAnalyzer:
             if self.static_analysis_results:
                 print(f"Static analysis results found: {self.static_analysis_results}")
                 # If there are changes from static analysis, filter tests based on changed methods
-                changed_methods = set(self.static_analysis_results)
+                #TODO start
+                # seggregate, affected methods, removed methods, new tests, modified tests and remove tests
+                # Then, remove removed methods and testcases mapped with it, remove removed tests from the existing mapping.
+                #Now Run the new tests and modified tests and append the method to tests mapping in the existing mapping(Follow logging technique for tracing methods that I used for first generating json)
+                #TODO end
+                # Segregate affected methods and tests
+                modified_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("Modified_methods", set())}
+                removed_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("Removed_methods", set())}
+                added_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("Added_methods", set())}
+                added_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("Added_tests", set())}
+                modified_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("Modified_tests", set())}
+                removed_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("Removed_tests", set())}
 
+                # Remove entries of removed methods
+                for removed_method in removed_methods:
+                    if removed_method in existing_mapping:
+                        del existing_mapping[removed_method]
+
+                # Remove entries of removed tests
+                for test in removed_tests:
+                    for method in list(existing_mapping.keys()):  # Iterate over keys (methods)
+                        if test in existing_mapping[method]:
+                            existing_mapping[method].remove(test)  # Remove the test
+                        # Remove the method if no tests remain
+                        if not existing_mapping[method]:
+                            del existing_mapping[method]
+
+                # Save the updated mapping back to the JSON file
+                with open(original_json_mapping_path, "w") as json_file:
+                    json.dump(existing_mapping, json_file, indent=4)
+                # Run new and modified tests and update mapping
+                tests_to_run = added_tests.union(modified_tests)
+                if tests_to_run:
+                    print(f"Running new and modified tests: {tests_to_run}")
+                    # Add logging to trace new/modified test executions
+                    self.insert_logging_statements(self.class_under_test_path)
+                    self.insert_logging_statements(self.test_class_path)
+                    # Run the specific tests and capture output
+                    output = self.compile_and_run_tests(list(tests_to_run))
+
+                    if output is None:
+                        print("Error occurred while running new/modified tests.")
+                        return
+                    method_calls = self.parse_output(output)
+
+                    self.cleanup()
+                    self.save_results_to_json(method_calls)
+
+                # Now, check for changed methods and run the relevant test cases
+                affected_methods = added_methods.union(modified_methods)
                 for call, test_methods in existing_mapping.items():
-                    if call in changed_methods:
+                    if call in affected_methods:
                         method_calls[call] = test_methods
 
                 if method_calls:
                     # Only run the test cases related to changed methods
                     print("Running tests for changed methods:", method_calls)
                     test_methods_to_run = [test_method for test_methods in method_calls.values() for test_method in test_methods]
-                    output = self.compile_and_run_tests(test_methods_to_run)
-                    return self.parse_output(output) if output else None
-                else:
-                    # If no relevant test methods after static analysis, use the full mapping
-                    print("No static analysis results or no relevant changes. Using the full mapping.")
-                    return existing_mapping
+                    self.compile_and_run_tests(test_methods_to_run)
+
+            print("Analysis complete.")
+            self.cleanup()
+            return
         else:
-             # If no existing mapping, create a new one by analyzing the code
+            # If no existing mapping, create a new one by analyzing the code
             print("No existing mapping found. Creating a new one...")
 
             # If this is the first run, analyze the whole code
@@ -262,7 +315,30 @@ class DynamicJavaAnalyzer:
 
 if __name__ == "__main__":
     # Static analysis results: List of methods that were changed (for example)
-    static_analysis_results = ["deposit", "withdraw"]  # Example changed methods
+    static_analysis_results = {
+        "Modified_methods": {
+            "BankAccount.deposit",
+            "BankAccount.withdraw",
+            "BankAccount.calculateInterest",
+            "BankAccount.transfer",
+            "BankAccount.sumPositiveBalances"
+        },
+        "Added_methods": {
+            "BankAccount.getAccountSummary"
+        },
+        "Removed_methods": {
+            "BankAccount.calculateInterestDivideByZero"
+        },
+        "Added_tests": {
+            "BankAccountTest.testGetAccountSummary"
+        },
+        "Modified_tests": {
+            "BankAccountTest.testTransferSuccess"
+        },
+        "Removed_tests": {
+            "BankAccountTest.testCalculateInterestDivideByZero"
+        }
+    }
     class_under_test_path = "java/original/src/main/BankAccount.java"  # Path to the class that needs to be tested
     test_class_path = "java/original/test/BankAccountTest.java"  # Path to the JUnit test class
     project_path = "java/original"
@@ -270,7 +346,7 @@ if __name__ == "__main__":
     results = analyzer.analyze()
 
     if results:
-            analyzer.save_results_to_json(results)
+        analyzer.save_results_to_json(results)
 
     print("Analysis complete.")
 
