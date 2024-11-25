@@ -117,14 +117,6 @@ class DependencyTracker:
         """
         callers = set()
 
-        def find_method_node(class_name, method_name):
-            for class_node in code_ast.children:
-                if class_node.type == "class" and class_node.name == class_name:
-                    for method_node in class_node.children:
-                        if method_node.type == "method" and method_name in method_node.name:
-                            return method_node
-            return None
-
         def find_callers(target_method, target_class):
             for class_node in code_ast.children:
                 if class_node.type == "class":
