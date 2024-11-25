@@ -8,7 +8,7 @@ from static_analysis.change_detector import ChangeDetector
 from static_analysis.dependency_tracker import DependencyTracker
 
 # Debug flag
-DEBUG = False
+DEBUG = True
 
 
 def select_folder(prompt="Select the project folder"):
