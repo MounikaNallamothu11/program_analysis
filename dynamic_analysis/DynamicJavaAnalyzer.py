@@ -6,23 +6,40 @@ import json
 import subprocess
 
 class DynamicJavaAnalyzer:
-    def __init__(self, class_under_test_path, test_class_path, project_path, static_analysis_results):
-        self.class_under_test_path = os.path.abspath(f"{class_under_test_path}")  # The class to be tested
-        self.test_class_path = os.path.abspath(f"{test_class_path}")  # The JUnit test class path
+    def __init__(self, src_path, test_path, project_path, static_analysis_results):
+        self.src_path = src_path
+        self.test_path = test_path
         self.project_path = project_path
         self.static_analysis_results = static_analysis_results
-        # Backup file path for restoring the original class after modifications
-        self.backup_class_path = os.path.abspath(f"{class_under_test_path}.bak")
-        self.backup_test_path = os.path.abspath(f"{test_class_path}.bak")
-        self.class_name = os.path.basename(self.class_under_test_path).split('.')[0]
         self.original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"  # Path to the original JSON mapping
 
-    def backup_original_file(self,path,backup):
+    def get_java_files(self, directory):
         """
-        Creates a backup of the original class file.
+            Recursively collects all `.java` files in the given directory.
+            Returns a dictionary mapping filenames to their full paths.
+            """
+        java_files = {}
+        for root, _, files in os.walk(directory):
+            for file in files:
+                if file.endswith(".java"):
+                    full_path = os.path.join(root, file)
+                    java_files[file] = full_path  # Map filename to full path
+        return java_files
+
+
+    def backup_and_restore(self, java_files, backup=True):
         """
-        if not os.path.exists(backup):
-            shutil.copy(path, backup)
+        Backups or restores Java files based on the `backup` flag.
+        """
+        for filename, file_path in java_files.items():
+            backup_path = f"{file_path}.bak"
+            if backup:
+                shutil.copy(file_path, backup_path)
+                print(f"Backup created for {filename}: {backup_path}")
+            else:
+                shutil.copy(backup_path, file_path)
+                print(f"Restored original file from {backup_path}")
+
 
     def restore_original_file(self,path,backup):
         """
@@ -31,42 +48,34 @@ class DynamicJavaAnalyzer:
         if os.path.exists(backup):
             shutil.copy(backup, path)
 
-    def insert_logging_statements(self,path):
+    def insert_logging_statements(self, java_files):
         """
-        Adds logging print statements to each method inside the class under test.
-        The print statement is added as the first line inside each method body.
+        Adds logging print statements to each method inside the given Java files.
         """
-        # Load the original class under test content
-        with open(path, 'r') as file:
-            class_code = file.readlines()
-
-        # Regex to identify method signatures (excluding the method body)
+        print(f"java_files: {java_files}")
         method_pattern = re.compile(r'(\b(public|private|protected|static|void|\s)*\s[a-zA-Z_][a-zA-Z0-9_]*\s*\(.*\))\s*\{')
 
-        modified_code = []
-        in_method = False
+        for file_path in java_files:
+            with open(file_path, 'r') as file:
+                code_lines = file.readlines()
 
-        for line in class_code:
-            method_match = method_pattern.search(line)
-            if method_match:
-                # If we found a method, insert the print statement immediately after the opening brace '{'
-                method_name = method_match.group(0).split('(')[0].split()[-1]  # Extract method name
-                modified_code.append(line)  # Add method declaration
-                modified_code.append(f'System.out.println("CALL {method_name}");\n')  # Insert print inside method body
-                in_method = True
-            elif in_method:
-                # Check for the closing brace '}' for the current method
-                if '}' in line:
+            modified_code = []
+            in_method = False
+            for line in code_lines:
+                method_match = method_pattern.search(line)
+                if method_match:
+                    method_name = method_match.group(0).split('(')[0].split()[-1]
+                    modified_code.append(line)
+                    modified_code.append(f'System.out.println("CALL {method_name}");\n')
+                    in_method = True
+                elif in_method and '}' in line:
                     modified_code.append(line)
                     in_method = False
                 else:
                     modified_code.append(line)
-            else:
-                modified_code.append(line)
 
-        # Write the modified code to the original file
-        with open(path, 'w') as file:
-            file.writelines(modified_code)
+            with open(file_path, 'w') as file:
+                file.writelines(modified_code)
 
 
     def compile_and_run_tests(self, test_methods=None):
@@ -115,8 +124,57 @@ class DynamicJavaAnalyzer:
             self.cleanup()
             os.chdir(current_directory)
 
+    def extract_class_names(self, java_files):
+        """
+        Extracts class names from a dictionary of Java files, where the key is the filename
+        and the value is the file path. Returns a dictionary of {java_file: class_name}.
+        """
+        class_names = {}
 
-    def parse_output(self, output):
+        # Regular expression to match class declarations (public, private, protected modifiers are allowed)
+        class_pattern = re.compile(r'\b(class)\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*[{]')
+
+        # Iterate over the dictionary items (filename: path)
+        for java_file, file_path in java_files.items():
+            # Convert relative paths to absolute paths
+            java_file_path = os.path.abspath(file_path)
+
+            # Check if the file exists before trying to open it
+            if not os.path.exists(java_file_path):
+                print(f"Warning: File {java_file_path} does not exist!")
+                continue
+
+            # Now extract the class name
+            class_name = self.get_class_name_from_file(java_file_path)
+
+            if class_name:
+                class_names[java_file] = class_name
+
+            print(f"Class names so far: {class_names}")
+
+        return class_names
+
+
+    def get_class_name_from_file(self, file_path):
+        """
+        Extracts the class name from the Java file at the given path.
+        """
+        class_pattern = re.compile(r'\b(class)\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*[{]')
+        class_name = None
+
+        # Open the file to read its content
+        with open(file_path, 'r') as file:
+            for line in file:
+                line = line.strip()
+                match = class_pattern.search(line)
+                if match:
+                    class_name = match.group(2)  # The class name is the second capture group
+                    break  # Stop after finding the first class name
+
+        return class_name
+
+
+    def parse_output(self, output, class_names):
         """
         Parses the output from the test run to associate each test with the methods it calls.
         Ignores the class name as a method, and avoids repeating method names for each test.
@@ -134,7 +192,7 @@ class DynamicJavaAnalyzer:
                 method_name = line.split("CALL ")[1]
 
                 # Ensure we do not add the class name as a method
-                if method_name != self.class_name and current_test_method:
+                if method_name not in class_names.values() and current_test_method:
                     method_calls[current_test_method].add(method_name)  # Use set to avoid duplicates
 
         # Convert sets back to lists to maintain the expected output format
@@ -151,20 +209,25 @@ class DynamicJavaAnalyzer:
 
     def cleanup(self):
         """
-        Restores the original class and test files and deletes their backups.
+        Restores the original Java files and deletes their backups.
         """
-        print("Restoring the original class file...")
-        self.restore_original_file(self.class_under_test_path, self.backup_class_path)
+        # Collect all Java files from the src and test directories
+        all_java_files = self.get_java_files(self.src_path)
+        all_java_files.update(self.get_java_files(self.test_path))  # Merge src and test files
 
-        print("Restoring the original test file...")
-        self.restore_original_file(self.test_class_path, self.backup_test_path)
+        print("Restoring original files from backups...")
+        for filename, full_path in all_java_files.items():
+            backup_path = full_path + ".bak"
+            print(f"Restoring {filename} from {backup_path}...")
+            self.restore_original_file(full_path, backup_path)
 
-        print("Deleting class backup file...")
-        self.delete_backup(self.backup_class_path)
+        print("Deleting backup files...")
+        for filename, full_path in all_java_files.items():
+            backup_path = full_path + ".bak"
+            print(f"Deleting backup for {filename} at {backup_path}...")
+            self.delete_backup(backup_path)
 
-        print("Deleting test backup file...")
-        self.delete_backup(self.backup_test_path)
-
+        print("Cleanup completed.")
 
     def save_results_to_json(self, results):
         # Reverse the mapping: call → test_methods
@@ -202,17 +265,17 @@ class DynamicJavaAnalyzer:
         return full_name.split('.')[-1]
 
     def analyze(self):
-        # Backup original files
-        print("Backing up the original class file...")
-        self.backup_original_file(self.class_under_test_path, self.backup_class_path)
+        # Collect Java files from both src and test directories
+        all_java_files = self.get_java_files(self.src_path)
+        all_java_files.update(self.get_java_files(self.test_path))  # Merge dictionaries
 
-        print("Backing up the original test file...")
-        self.backup_original_file(self.test_class_path, self.backup_test_path)
+        # Backup original files
+        self.backup_and_restore(all_java_files, backup=True)
 
         print(f"Current working directory: {os.getcwd()}")
         original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"
 
-        # Check if existing mapping is present, else create a new one
+        # Check if existing mapping is present
         print(original_json_mapping_path)
         if os.path.exists(original_json_mapping_path):
             print("Existing mapping found. Loading the mapping...")
@@ -221,12 +284,6 @@ class DynamicJavaAnalyzer:
 
             if self.static_analysis_results:
                 print(f"Static analysis results found: {self.static_analysis_results}")
-                # If there are changes from static analysis, filter tests based on changed methods
-                #TODO start
-                # seggregate, affected methods, removed methods, new tests, modified tests and remove tests
-                # Then, remove removed methods and testcases mapped with it, remove removed tests from the existing mapping.
-                #Now Run the new tests and modified tests and append the method to tests mapping in the existing mapping(Follow logging technique for tracing methods that I used for first generating json)
-                #TODO end
                 # Segregate affected methods and tests
                 modified_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("Modified_methods", set())}
                 removed_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("Removed_methods", set())}
@@ -242,67 +299,65 @@ class DynamicJavaAnalyzer:
 
                 # Remove entries of removed tests
                 for test in removed_tests:
-                    for method in list(existing_mapping.keys()):  # Iterate over keys (methods)
+                    for method in list(existing_mapping.keys()):
                         if test in existing_mapping[method]:
-                            existing_mapping[method].remove(test)  # Remove the test
-                        # Remove the method if no tests remain
-                        if not existing_mapping[method]:
+                            existing_mapping[method].remove(test)
+                        if not existing_mapping[method]:  # Remove method if no tests remain
                             del existing_mapping[method]
 
-                # Save the updated mapping back to the JSON file
+                # Save updated mapping to JSON
                 with open(original_json_mapping_path, "w") as json_file:
                     json.dump(existing_mapping, json_file, indent=4)
-                # Run new and modified tests and update mapping
+
+                # Run new and modified tests
                 tests_to_run = added_tests.union(modified_tests)
                 if tests_to_run:
-                    print(f"Running new and modified tests: {tests_to_run}")
-                    # Add logging to trace new/modified test executions
-                    self.insert_logging_statements(self.class_under_test_path)
-                    self.insert_logging_statements(self.test_class_path)
-                    # Run the specific tests and capture output
-                    output = self.compile_and_run_tests(list(tests_to_run))
+                    for full_path in all_java_files.values():
+                        self.insert_logging_statements([full_path])
 
+                    output = self.compile_and_run_tests(list(tests_to_run))
                     if output is None:
                         print("Error occurred while running new/modified tests.")
                         return
-                    method_calls = self.parse_output(output)
 
+                    class_names = self.extract_class_names(all_java_files)
+                    method_calls = self.parse_output(output,class_names)
                     self.cleanup()
                     self.save_results_to_json(method_calls)
 
-                # Now, check for changed methods and run the relevant test cases
+                # Check for affected methods and run relevant tests
                 affected_methods = added_methods.union(modified_methods)
-                for call, test_methods in existing_mapping.items():
-                    if call in affected_methods:
-                        method_calls[call] = test_methods
+                for method, test_methods in existing_mapping.items():
+                    if method in affected_methods:
+                        method_calls[method] = test_methods
 
                 if method_calls:
-                    # Only run the test cases related to changed methods
-                    print("Running tests for changed methods:", method_calls)
-                    test_methods_to_run = [test_method for test_methods in method_calls.values() for test_method in test_methods]
+                    test_methods_to_run = [test for tests in method_calls.values() for test in tests]
                     self.compile_and_run_tests(test_methods_to_run)
 
             print("Analysis complete.")
             self.cleanup()
             return
+
         else:
-            # If no existing mapping, create a new one by analyzing the code
+            # If no existing mapping, create a new one
             print("No existing mapping found. Creating a new one...")
+            method_calls = {}
 
-            # If this is the first run, analyze the whole code
-            print("Inserting logging statements into the class under test...")
-            self.insert_logging_statements(self.class_under_test_path)
+            # Insert logging into all Java files
+            print("Inserting logging statements into all relevant Java files...")
+            for full_path in all_java_files.values():
+                self.insert_logging_statements([full_path])
 
-            print("Inserting logging statements into the Test...")
-            self.insert_logging_statements(self.test_class_path)
-
-            print("Compiling and running modified Java code and test class...")
+            print("Compiling and running all Java files...")
             output = self.compile_and_run_tests()
             if output is None:
                 return
 
+            class_names = self.extract_class_names(all_java_files)
+
             print("Parsing output to determine method calls...")
-            method_calls = self.parse_output(output)
+            method_calls = self.parse_output(output, class_names)
 
             self.cleanup()
 
@@ -310,6 +365,7 @@ class DynamicJavaAnalyzer:
             self.save_results_to_json(method_calls)
 
             return method_calls
+
 
 
 
@@ -339,10 +395,10 @@ if __name__ == "__main__":
             "BankAccountTest.testCalculateInterestDivideByZero"
         }
     }
-    class_under_test_path = "java/original/src/main/BankAccount.java"  # Path to the class that needs to be tested
-    test_class_path = "java/original/test/BankAccountTest.java"  # Path to the JUnit test class
+    src_path = "java/original/src/main"  # Path to the class that needs to be tested
+    test_path = "java/original/test"  # Path to the JUnit test class
     project_path = "java/original"
-    analyzer = DynamicJavaAnalyzer(class_under_test_path, test_class_path,project_path,static_analysis_results)
+    analyzer = DynamicJavaAnalyzer(src_path, test_path, project_path, static_analysis_results)
     results = analyzer.analyze()
 
     if results:
