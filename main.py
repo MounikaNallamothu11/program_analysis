@@ -8,7 +8,7 @@ from static_analysis.change_detector import ChangeDetector
 from static_analysis.dependency_tracker import DependencyTracker
 
 # Debug flag
-DEBUG = True
+DEBUG = False
 
 
 def select_folder(prompt="Select the project folder"):
@@ -59,7 +59,7 @@ def main():
     """
 
     if DEBUG:
-        print("DEBUG mode enabled: Using java/original and java/modified folders for analysis.\n")
+        print("\nDEBUG mode enabled: Using java/original and java/modified folders for analysis.\n")
 
         # Paths for original and modified projects in DEBUG mode
         original_path = "java/original"
