@@ -7,8 +7,8 @@ from tkinter import filedialog
 from static_analysis.change_detector import ChangeDetector
 from static_analysis.dependency_tracker import DependencyTracker
 
-# Debug flag
-DEBUG = False
+# Testing flag
+TESTING = True
 
 
 def select_folder(prompt="Select the project folder"):
@@ -58,15 +58,15 @@ def main():
     Analyze a Java project to detect changes and affected tests.
     """
 
-    if DEBUG:
-        print("\nDEBUG mode enabled: Using java/original and java/modified folders for analysis.\n")
+    if TESTING:
+        print("\nTESTING mode enabled: Using java/original and java/modified folders for analysis.\n")
 
-        # Paths for original and modified projects in DEBUG mode
+        # Paths for original and modified projects in TESTING mode
         original_path = "java/original"
         modified_path = "java/modified"
 
         if not os.path.isdir(original_path) or not os.path.isdir(modified_path):
-            print(f"DEBUG paths '{original_path}' or '{modified_path}' are invalid. Exiting.")
+            print(f"TESTING paths '{original_path}' or '{modified_path}' are invalid. Exiting.")
             return
 
         # Perform analysis using ChangeDetector
