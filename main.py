@@ -8,9 +8,10 @@ from static_analysis.change_detector import ChangeDetector
 from static_analysis.dependency_tracker import DependencyTracker
 from dynamic_analysis.DynamicJavaAnalyzer import DynamicJavaAnalyzer
 
-# Testing flag
+# User flags
 TESTING = True
-
+SHOW_METHOD_BODIES = False
+PRINT_AST = False
 
 
 def find_src_folder(project_path):
@@ -89,7 +90,7 @@ def main():
 
         # Perform analysis using ChangeDetector
         detector = ChangeDetector(original_path, modified_path)
-        changes = detector.detect_changes(printer=True, showBodies=False)
+        changes = detector.detect_changes(printer=True, showBodies=SHOW_METHOD_BODIES)
 
     else:
         # Normal mode: Select Git-enabled project folder
@@ -158,7 +159,7 @@ def main():
 
 
     # Get all caller methods for the directly affected methods
-    indirectly_affected_methods = dependencyTracker.provide_all_caller_methods(directly_affected_methods, printAST=True)
+    indirectly_affected_methods = dependencyTracker.provide_all_caller_methods(directly_affected_methods, printAST=PRINT_AST)
 
     print(f"\nIndirectly affected methods: {indirectly_affected_methods}\n")
 
