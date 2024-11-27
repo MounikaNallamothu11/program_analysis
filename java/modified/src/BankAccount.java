@@ -23,6 +23,7 @@ public class BankAccount {
     public String transfer(double amount, BankAccount destinationAccount) {
         if (amount <= balance) {
             withdraw(amount);
+            destinationAccount.deposit(amount);
             return "Transfer successful. New balance: " + balance;
         } else {
             return "Insufficient funds for transfer. Current balance: " + balance;
@@ -54,19 +55,12 @@ public class BankAccount {
         return total;
     }
 
-    public void test() {
-        return;
-    }
-
-    public void test2() {
-        return;
-    }
-
     public double getBalance() {
         return balance; // Returns the current balance
     }
 
     public void withdraw(double amount) {
+        System.out.println("Withdrawing amount: " + amount);
         balance -= amount; // Withdraws the specified amount
     }
 
