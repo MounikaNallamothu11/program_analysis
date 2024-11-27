@@ -56,7 +56,8 @@ class DependencyTracker:
 
     def parse_java_code(self, code: str) -> ASTNode:
         """
-        Parse a single Java file to build an AST.
+        Parse a single Java file to build an AST, resolving variable types for method calls on parameters
+        and objects from collections.
         """
         lines = code.splitlines()
         root = self.ASTNode("file", "file-root")
@@ -86,10 +87,20 @@ class DependencyTracker:
             )
             if method_match:
                 method_name = method_match.group(5)
+                method_params = method_match.group(6)  # Parameters inside parentheses
                 method_node = self.ASTNode("method", method_name)
                 if class_node:
                     self.user_defined_methods.add(f"{class_node.name}.{method_name}")
                     class_node.add_child(method_node)
+
+                    # Parse method parameters and add them to the variable map
+                    for param in method_params.split(","):
+                        param = param.strip()
+                        param_match = re.match(r'(\w+)\s+(\w+)', param)
+                        if param_match:
+                            param_type = param_match.group(1)  # Type of the parameter (e.g., `BankAccount`)
+                            param_name = param_match.group(2)  # Name of the parameter (e.g., `destinationAccount`)
+                            variable_class_map[param_name] = param_type
                 continue
 
             # Check for instantiations (e.g., `ClassName obj = new ClassName(...)`)
@@ -122,15 +133,12 @@ class DependencyTracker:
                         method_node.add_child(call_node)
                 continue
 
-            # Check for fully qualified method calls (e.g., `ClassName.method(...)`)
-            fully_qualified_call_match = re.search(r'\b([a-zA-Z_]\w*)\.(\w+)\s*\((.*?)\)', line)
-            if fully_qualified_call_match and method_node:
-                caller_class_or_object = fully_qualified_call_match.group(1)  # Class or object
-                method_name = fully_qualified_call_match.group(2)  # Method being called
-                call_node = self.ASTNode("call", f"{caller_class_or_object}.{method_name}")
-                # Avoid duplicate calls
-                if not any(child.name == call_node.name for child in method_node.children):
-                    method_node.add_child(call_node)
+            # Handle enhanced for-loops (e.g., `for (ClassName var : collection)`)
+            enhanced_for_loop_match = re.search(r'for\s*\(\s*(\w+)\s+(\w+)\s*:\s*(\w+)\s*\)', line)
+            if enhanced_for_loop_match:
+                iterated_class = enhanced_for_loop_match.group(1)  # Type of the iterated variable (e.g., `BankAccount`)
+                iterated_var = enhanced_for_loop_match.group(2)  # Name of the iterated variable (e.g., `account`)
+                variable_class_map[iterated_var] = iterated_class  # Map the variable to its class
                 continue
 
             # Check for standalone method calls within the same class (e.g., `method(...)`)
@@ -145,6 +153,7 @@ class DependencyTracker:
                     method_node.add_child(call_node)
 
         return root
+
 
 
     def extract_callers(self, target_methods: set[str], project_ast: ASTNode) -> set[str]:
