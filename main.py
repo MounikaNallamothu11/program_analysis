@@ -131,18 +131,24 @@ def main():
     if added_tests:
         print(f"\nNew tests were added but still haven't run: {added_tests}")
 
+    print("")
 
-    # # DependencyTracker is a class that creates an AST of a Java file to track all caller methods of a given list of methods
-    # dependencyTracker = DependencyTracker(original_path, modified_path)
 
-    # # Get all caller methods for the directly affected methods
-    # indirectly_affected_methods = dependencyTracker.provide_all_caller_methods(directly_affected_methods)
+    if TESTING:
+        # DependencyTracker is a class that creates an AST of a Java file to track all caller methods of a given list of methods
+        dependencyTracker = DependencyTracker(modified_path)
+    else:
+        dependencyTracker = DependencyTracker(project_path)
 
-    # print(f"\nIndirectly affected methods: {indirectly_affected_methods}\n")
 
-    # # Combine directly and indirectly affected methods
-    # all_possible_affected_methods = directly_affected_methods | indirectly_affected_methods
-    # print(f"All possible affected methods: {all_possible_affected_methods}\n")
+    # Get all caller methods for the directly affected methods
+    indirectly_affected_methods = dependencyTracker.provide_all_caller_methods(directly_affected_methods)
+
+    print(f"\nIndirectly affected methods: {indirectly_affected_methods}\n")
+
+    # Combine directly and indirectly affected methods
+    all_possible_affected_methods = directly_affected_methods | indirectly_affected_methods
+    print(f"All possible affected methods: {all_possible_affected_methods}\n")
 
 
 if __name__ == "__main__":
