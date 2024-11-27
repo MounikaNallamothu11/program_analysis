@@ -54,10 +54,11 @@ class DependencyTracker:
 
         return project_ast
 
+
     def parse_java_code(self, code: str) -> ASTNode:
         """
-        Parse a single Java file to build an AST, resolving variable types for method calls on parameters
-        and objects from collections.
+        Parse a single Java file to build an AST, resolving variable types for method calls on parameters,
+        objects from collections, and static method calls.
         """
         lines = code.splitlines()
         root = self.ASTNode("file", "file-root")
@@ -101,7 +102,7 @@ class DependencyTracker:
                             param_type = param_match.group(1)  # Type of the parameter (e.g., `BankAccount`)
                             param_name = param_match.group(2)  # Name of the parameter (e.g., `destinationAccount`)
                             variable_class_map[param_name] = param_type
-                continue
+                    continue
 
             # Check for instantiations (e.g., `ClassName obj = new ClassName(...)`)
             instantiation_match = re.search(
@@ -121,16 +122,19 @@ class DependencyTracker:
             # Check for method calls on variables (e.g., `obj.method(...)`)
             variable_method_call_match = re.search(r'\b([a-zA-Z_]\w*)\.(\w+)\s*\((.*?)\)', line)
             if variable_method_call_match and method_node:
-                variable_name = variable_method_call_match.group(1)  # Variable calling the method
+                caller = variable_method_call_match.group(1)  # Variable or class calling the method
                 method_name = variable_method_call_match.group(2)  # Method being called
 
                 # Look up the class associated with the variable
-                if variable_name in variable_class_map:
-                    associated_class = variable_class_map[variable_name]
+                if caller in variable_class_map:  # It's a variable
+                    associated_class = variable_class_map[caller]
                     call_node = self.ASTNode("call", f"{associated_class}.{method_name}")
-                    # Avoid duplicate calls
-                    if not any(child.name == call_node.name for child in method_node.children):
-                        method_node.add_child(call_node)
+                else:  # It's a class (static method)
+                    call_node = self.ASTNode("call", f"{caller}.{method_name}")
+
+                # Avoid duplicate calls
+                if not any(child.name == call_node.name for child in method_node.children):
+                    method_node.add_child(call_node)
                 continue
 
             # Handle enhanced for-loops (e.g., `for (ClassName var : collection)`)
