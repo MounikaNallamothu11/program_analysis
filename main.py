@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import filedialog
 from static_analysis.change_detector import ChangeDetector
 from static_analysis.dependency_tracker import DependencyTracker
+from dynamic_analysis.DynamicJavaAnalyzer import DynamicJavaAnalyzer
 
 # User flags
 TESTING = True
@@ -166,13 +167,22 @@ def main():
     all_possible_affected_methods = directly_affected_methods | indirectly_affected_methods
     print(f"All possible affected methods: {all_possible_affected_methods}\n")
 
-        # changes_dynamic = {
-    #         "directly_affected_methods": directly_affected_methods,
-    #         "directly_affected_tests": directly_affected_tests,
-    #         "removed_methods": removed_methods,
-    #         "added_tests": added_tests,
-    #         "removed_tests": removed_tests
-    #     }
+    changes_dynamic = {
+        "directly_affected_methods": directly_affected_methods,
+        "removed_methods": removed_methods,
+        "added_methods" : added_methods,
+        "added_tests": added_tests,
+        "modified_tests":modified_tests,
+        "removed_tests": removed_tests
+    }
+    if TESTING:
+        dynamicAnalyzer =  DynamicJavaAnalyzer(modified_path,changes_dynamic)
+    else:
+        dynamicAnalyzer =  DynamicJavaAnalyzer(project_path,changes_dynamic)
+
+    dynamicAnalyzer.analyze()
+
+
 
 
 if __name__ == "__main__":

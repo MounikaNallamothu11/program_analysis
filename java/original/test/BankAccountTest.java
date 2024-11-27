@@ -27,7 +27,8 @@ public class BankAccountTest {
         BankAccount sourceAccount = new BankAccount(1, 100);
         BankAccount destinationAccount = new BankAccount(2, 50);
         String result = sourceAccount.transfer(150, destinationAccount);
-        assertEquals("Insufficient funds for transfer. Current balance: 100.0", result);
+        assertEquals("Insufficient funds for transfer. Current balance: 100.0",
+                result);
     }
 
     @Test
@@ -46,5 +47,20 @@ public class BankAccountTest {
 
         double total = BankAccount.sumPositiveBalances(accounts);
         assertEquals(300, total); // Only sum positive balances: 100 + 200 = 300
+    }
+
+    @Test
+    public void testGetAccountSummary() {
+        BankAccount account = new BankAccount(1, 100);
+        String summary = account.getAccountSummary();
+        assertEquals("Account 1 has a balance of 100.0", summary);
+
+        account.deposit(50);
+        summary = account.getAccountSummary();
+        assertEquals("Account 1 has a balance of 150.0", summary);
+
+        account.withdraw(30);
+        summary = account.getAccountSummary();
+        assertEquals("Account 1 has a balance of 120.0", summary);
     }
 }

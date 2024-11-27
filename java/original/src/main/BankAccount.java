@@ -35,9 +35,6 @@ public class BankAccount {
         if (years == 0) {
             throw new ArithmeticException("Cannot divide by zero.");
         }
-        if (balance <= 200) {
-            throw new ArithmeticException("Balance is too low for interest calculation.");
-        }
         return balance / years; // Calculates interest based on the number of years
     }
 
@@ -51,7 +48,6 @@ public class BankAccount {
                 total += 0; // Optional, as it's redundant
             }
         }
-        System.out.println("Total: " + total);
         return total;
     }
 
@@ -60,11 +56,14 @@ public class BankAccount {
     }
 
     public void withdraw(double amount) {
-        System.out.println("Withdrawing amount: " + amount);
         balance -= amount; // Withdraws the specified amount
     }
 
     public long getAccountNumber() {
         return accountNr;
+    }
+
+    public String getAccountSummary() {
+        return "Account " + accountNr + " has a balance of " + balance;
     }
 }

@@ -77,11 +77,17 @@ class DynamicAnalysis:
             test_method = match.group(1)
             method_body = match.group(2)
 
+            print(test_method)
+            print(method_body)
+
             # Now, find method calls inside the body of the test case
-            call_pattern = re.compile(r'\b[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)?\s*\([^\)]*\)\s*;')
+            call_pattern = re.compile(r'\b(?:[a-zA-Z0-9_]+\.)*[a-zA-Z0-9_]+\s*\(([^()]*(?:\([^()]*\))?[^()]*)\)\s*;?')
 
             # Find method calls in the test method body
             calls_in_method = call_pattern.findall(method_body)
+
+            print("Calls in Method AHHHHHHHHHHHHHHHHHHHHHHHHH")
+            print(calls_in_method)
 
             # Extract the method names from the calls
             method_calls[test_method] = []
@@ -91,6 +97,9 @@ class DynamicAnalysis:
                 # Filter out irrelevant names like 'BankAccount' or 'assertEquals'
                 if method_name not in ['BankAccount', 'assertEquals']:
                     method_calls[test_method].append(method_name)
+
+            print(method_calls.items())
+            print("#################################")
 
         return method_calls
 
@@ -120,6 +129,7 @@ if __name__ == "__main__":
     # Parse the test file for method calls (e.g., deposit(), transfer(), getBalance())
     method_calls = analyzer.parse_method_calls(test_file_path)
 
+    print(method_calls.items())
     # For each test method, simulate that it exercises specific methods in BankAccount
     for test_method, executed_methods in method_calls.items():
         analyzer.run_analysis(test_method, executed_methods)
