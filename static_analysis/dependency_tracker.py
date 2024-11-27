@@ -54,7 +54,6 @@ class DependencyTracker:
 
         return project_ast
 
-
     def parse_java_code(self, code: str) -> ASTNode:
         """
         Parse a single Java file to build an AST, resolving variable types for method calls on parameters,
@@ -117,6 +116,30 @@ class DependencyTracker:
 
                 # Add variable-to-class mapping
                 variable_class_map[variable_name] = instantiated_class
+                continue
+
+            # Match both System.out.println and System.out.print
+            print_match = re.search(r'System\.out\.(println|print)\s*\(.*?\b([\w.]+)\((.*?)\)\s*\)', line)
+
+            if print_match and method_node:
+                full_method_call = print_match.group(2)  # e.g., "test" or "account.test1"
+                arguments = print_match.group(3)  # The arguments inside the method call
+
+                # Determine if it's a standalone or class-level method
+                if '.' in full_method_call:
+                    caller_class, method_name = full_method_call.rsplit('.', 1)
+                    if caller_class in variable_class_map:  # It's a variable
+                        associated_class = variable_class_map[caller_class]
+                        caller_class = associated_class
+                else:
+                    caller_class = class_node.name if class_node else "UnknownClass"
+                    method_name = full_method_call
+
+                call_node = self.ASTNode("call", f"{caller_class}.{method_name}")
+
+                # Avoid duplicate calls
+                if not any(child.name == call_node.name for child in method_node.children):
+                    method_node.add_child(call_node)
                 continue
 
             # Check for method calls on variables (e.g., `obj.method(...)`)

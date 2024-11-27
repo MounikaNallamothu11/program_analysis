@@ -8,4 +8,12 @@ public class A {
         BankAccount.sumPositiveBalances(null);
     }
 
+    public void c() {
+        BankAccount bankAccount = new BankAccount(1, 100);
+        B b = new B();
+
+        bankAccount.calculateInterest(0);
+        b.crazy();
+    }
+
 }
