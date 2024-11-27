@@ -320,6 +320,7 @@ class DynamicJavaAnalyzer:
                     output = self.compile_and_run_tests(list(tests_to_run))
                     if output is None:
                         print("Error occurred while running new/modified tests.")
+                        self.cleanup()
                         return
 
                     class_names = self.extract_class_names(all_java_files)
@@ -338,7 +339,40 @@ class DynamicJavaAnalyzer:
 
                 if affected_methods_testMethods_Mapping :
                     test_methods_to_run = list({test for tests in affected_methods_testMethods_Mapping .values() for test in tests})
-                    self.compile_and_run_tests(test_methods_to_run)
+                    #self.compile_and_run_tests(test_methods_to_run)
+                    for full_path in all_java_files.values():
+                        self.insert_logging_statements([full_path])
+
+                    output = self.compile_and_run_tests(list(test_methods_to_run))
+                    if output is None:
+                        print("Error occurred while running new/modified tests.")
+                        self.cleanup()
+                        return
+
+                    class_names = self.extract_class_names(all_java_files)
+                    method_calls = self.parse_output(output,class_names)
+                    self.cleanup()
+
+                    temp_mapping = {}
+                    for test_method, calls in method_calls.items():
+                        for call in calls:
+                            if call not in temp_mapping:
+                                temp_mapping[call] = []
+                            temp_mapping[call].append(test_method)
+
+                    #compare both temp and existing mapping and if any new item found from temp mapping,
+                    #Take that to existing mapping
+                    for method, new_tests in temp_mapping.items():
+                        if method not in existing_mapping:
+                            # Add the method with its test methods if not already in existing mapping
+                            existing_mapping[method] = new_tests
+                        else:
+                            # Add only the new test methods to the existing mapping
+                            existing_mapping[method] = list(set(existing_mapping[method] + new_tests))
+
+                    # Save the updated mapping to the JSON file
+                    with open(original_json_mapping_path, "w") as json_file:
+                        json.dump(existing_mapping, json_file, indent=4)
 
             print(f"The affected test cases are: {self.test_answers}")
             print("Analysis complete.")
@@ -358,6 +392,7 @@ class DynamicJavaAnalyzer:
             # print("Compiling and running all Java files...")
             output = self.compile_and_run_tests()
             if output is None:
+                self.cleanup()
                 return
 
             class_names = self.extract_class_names(all_java_files)
