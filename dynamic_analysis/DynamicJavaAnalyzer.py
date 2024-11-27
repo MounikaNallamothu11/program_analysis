@@ -7,7 +7,7 @@ import subprocess
 
 class DynamicJavaAnalyzer:
     def __init__(self, project_path, static_analysis_results):
-        self.src_path = project_path + "/src/main"  # Path to the class that needs to be tested
+        self.src_path = project_path + "/src"  # Path to the class that needs to be tested
         self.test_path = project_path + "/test"  # Path to the JUnit test class
         self.project_path = project_path
         self.static_analysis_results = static_analysis_results
