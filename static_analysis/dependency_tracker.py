@@ -195,7 +195,7 @@ class DependencyTracker:
         filtered_ast = self.filter_non_user_defined_methods(project_ast)
 
         if printAST:
-            print("\n AST Tree:\n")
+            print("\nAST Tree:\n")
             print(filtered_ast)
 
         # Extract caller methods
