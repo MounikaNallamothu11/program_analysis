@@ -55,14 +55,6 @@ public class BankAccount {
         return total;
     }
 
-    public void test() {
-        return;
-    }
-
-    public void test2() {
-        return;
-    }
-
     public double getBalance() {
         return balance; // Returns the current balance
     }
