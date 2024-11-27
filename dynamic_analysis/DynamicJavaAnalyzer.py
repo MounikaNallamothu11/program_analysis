@@ -6,9 +6,9 @@ import json
 import subprocess
 
 class DynamicJavaAnalyzer:
-    def __init__(self, src_path, test_path, project_path, static_analysis_results):
-        self.src_path = src_path
-        self.test_path = test_path
+    def __init__(self, project_path, static_analysis_results):
+        self.src_path = project_path + "/src/main"  # Path to the class that needs to be tested
+        self.test_path = project_path + "/test"  # Path to the JUnit test class
         self.project_path = project_path
         self.static_analysis_results = static_analysis_results
         self.original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"  # Path to the original JSON mapping
@@ -22,7 +22,7 @@ class DynamicJavaAnalyzer:
         for root, _, files in os.walk(directory):
             for file in files:
                 if file.endswith(".java"):
-                    full_path = os.path.join(root, file)
+                    full_path = os.path.normpath(os.path.join(root, file))
                     java_files[file] = full_path  # Map filename to full path
         return java_files
 
@@ -35,10 +35,10 @@ class DynamicJavaAnalyzer:
             backup_path = f"{file_path}.bak"
             if backup:
                 shutil.copy(file_path, backup_path)
-                print(f"Backup created for {filename}: {backup_path}")
+                # print(f"Backup created for {filename}: {backup_path}")
             else:
                 shutil.copy(backup_path, file_path)
-                print(f"Restored original file from {backup_path}")
+                # print(f"Restored original file from {backup_path}")
 
 
     def restore_original_file(self,path,backup):
@@ -52,7 +52,7 @@ class DynamicJavaAnalyzer:
         """
         Adds logging print statements to each method inside the given Java files.
         """
-        print(f"java_files: {java_files}")
+        # print(f"java_files: {java_files}")
         method_pattern = re.compile(r'(\b(public|private|protected|static|void|\s)*\s[a-zA-Z_][a-zA-Z0-9_]*\s*\(.*\))\s*\{')
 
         for file_path in java_files:
@@ -89,28 +89,18 @@ class DynamicJavaAnalyzer:
         try:
             if test_methods:
                 # Construct the Maven command to run specific test methods
-                # Extract unique test methods
                 combined_tests = "+".join(sorted(set(test_methods)))
-
-                maven_command = ['mvn', 'test', f'-Dtest=BankAccountTest#{combined_tests}']
                 print(f"Running required tests: {combined_tests}")
-
-                try:
-                    # Run the Maven command and capture output
-                    result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
-                    print(result.stdout)  # Display Maven output
-                except subprocess.CalledProcessError as e:
-                    print(f"Error running required tests: {e.stderr}")
+                maven_command = ['mvn', 'test', f'-Dtest=BankAccountTest#{combined_tests}']
             else:
                 # Default Maven command to run all tests
                 print("Running all tests...")
                 maven_command = ['mvn', 'clean', 'test']
 
-            # Execute the Maven command
-            result = subprocess.run(
-                maven_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-            )
+            # Run the Maven command and capture output
+            result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
 
+            # Check the result and handle errors
             if result.returncode != 0:
                 print("Maven build and test failed with errors:")
                 print(result.stderr)
@@ -120,9 +110,15 @@ class DynamicJavaAnalyzer:
             print(result.stdout)
             return result.stdout
 
+        except subprocess.CalledProcessError as e:
+            # Handle subprocess errors globally
+            print(f"Error running Maven command: {e.stderr}")
+            return None
+
         finally:
             self.cleanup()
             os.chdir(current_directory)
+
 
     def extract_class_names(self, java_files):
         """
@@ -150,7 +146,7 @@ class DynamicJavaAnalyzer:
             if class_name:
                 class_names[java_file] = class_name
 
-            print(f"Class names so far: {class_names}")
+            # print(f"Class names so far: {class_names}")
 
         return class_names
 
@@ -215,19 +211,19 @@ class DynamicJavaAnalyzer:
         all_java_files = self.get_java_files(self.src_path)
         all_java_files.update(self.get_java_files(self.test_path))  # Merge src and test files
 
-        print("Restoring original files from backups...")
+        # print("Restoring original files from backups...")
         for filename, full_path in all_java_files.items():
             backup_path = full_path + ".bak"
-            print(f"Restoring {filename} from {backup_path}...")
+            # print(f"Restoring {filename} from {backup_path}...")
             self.restore_original_file(full_path, backup_path)
 
-        print("Deleting backup files...")
+        # print("Deleting backup files...")
         for filename, full_path in all_java_files.items():
             backup_path = full_path + ".bak"
-            print(f"Deleting backup for {filename} at {backup_path}...")
+            # print(f"Deleting backup for {filename} at {backup_path}...")
             self.delete_backup(backup_path)
 
-        print("Cleanup completed.")
+        # print("Cleanup completed.")
 
     def save_results_to_json(self, results):
         # Reverse the mapping: call → test_methods
@@ -272,11 +268,11 @@ class DynamicJavaAnalyzer:
         # Backup original files
         self.backup_and_restore(all_java_files, backup=True)
 
-        print(f"Current working directory: {os.getcwd()}")
+        # print(f"Current working directory: {os.getcwd()}")
         original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"
 
         # Check if existing mapping is present
-        print(original_json_mapping_path)
+        # print(original_json_mapping_path)
         if os.path.exists(original_json_mapping_path):
             print("Existing mapping found. Loading the mapping...")
             existing_mapping = self.load_existing_mapping()
@@ -285,12 +281,12 @@ class DynamicJavaAnalyzer:
             if self.static_analysis_results:
                 print(f"Static analysis results found: {self.static_analysis_results}")
                 # Segregate affected methods and tests
-                modified_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("Modified_methods", set())}
-                removed_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("Removed_methods", set())}
-                added_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("Added_methods", set())}
-                added_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("Added_tests", set())}
-                modified_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("Modified_tests", set())}
-                removed_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("Removed_tests", set())}
+                modified_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("directly_affected_methods", set())}
+                removed_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("removed_methods", set())}
+                added_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("added_methods", set())}
+                added_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("added_tests", set())}
+                modified_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("modified_tests", set())}
+                removed_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("removed_tests", set())}
 
                 # Remove entries of removed methods
                 for removed_method in removed_methods:
@@ -327,13 +323,17 @@ class DynamicJavaAnalyzer:
 
                 # Check for affected methods and run relevant tests
                 affected_methods = added_methods.union(modified_methods)
+                affected_methods_testMethods_Mapping = {}
+
                 for method, test_methods in existing_mapping.items():
                     if method in affected_methods:
-                        method_calls[method] = test_methods
+                        affected_methods_testMethods_Mapping [method] = test_methods
 
-                if method_calls:
-                    test_methods_to_run = [test for tests in method_calls.values() for test in tests]
+
+                if affected_methods_testMethods_Mapping :
+                    test_methods_to_run = list({test for tests in affected_methods_testMethods_Mapping .values() for test in tests})
                     self.compile_and_run_tests(test_methods_to_run)
+
 
             print("Analysis complete.")
             self.cleanup()
@@ -345,64 +345,60 @@ class DynamicJavaAnalyzer:
             method_calls = {}
 
             # Insert logging into all Java files
-            print("Inserting logging statements into all relevant Java files...")
+            # print("Inserting logging statements into all relevant Java files...")
             for full_path in all_java_files.values():
                 self.insert_logging_statements([full_path])
 
-            print("Compiling and running all Java files...")
+            # print("Compiling and running all Java files...")
             output = self.compile_and_run_tests()
             if output is None:
                 return
 
             class_names = self.extract_class_names(all_java_files)
 
-            print("Parsing output to determine method calls...")
+            # print("Parsing output to determine method calls...")
             method_calls = self.parse_output(output, class_names)
 
             self.cleanup()
 
-            print("Analysis complete.")
-            self.save_results_to_json(method_calls)
 
-            return method_calls
+            self.save_results_to_json(method_calls)
+            print("Analysis complete.")
+
+            return
 
 
 
 
 if __name__ == "__main__":
     # Static analysis results: List of methods that were changed (for example)
-    static_analysis_results = {
-        "Modified_methods": {
-            "BankAccount.deposit",
-            "BankAccount.withdraw",
-            "BankAccount.calculateInterest",
-            "BankAccount.transfer",
-            "BankAccount.sumPositiveBalances"
-        },
-        "Added_methods": {
-            "BankAccount.getAccountSummary"
-        },
-        "Removed_methods": {
-            "BankAccount.calculateInterestDivideByZero"
-        },
-        "Added_tests": {
-            "BankAccountTest.testGetAccountSummary"
-        },
-        "Modified_tests": {
-            "BankAccountTest.testTransferSuccess"
-        },
-        "Removed_tests": {
-            "BankAccountTest.testCalculateInterestDivideByZero"
-        }
-    }
-    src_path = "java/original/src/main"  # Path to the class that needs to be tested
-    test_path = "java/original/test"  # Path to the JUnit test class
-    project_path = "java/original"
-    analyzer = DynamicJavaAnalyzer(src_path, test_path, project_path, static_analysis_results)
+    #static_analysis_results = {
+    #    "directly_affected_methods": {
+    #       "BankAccount.deposit",
+    #       "BankAccount.withdraw",
+    #        "BankAccount.calculateInterest",
+    #       "BankAccount.transfer",
+    #       "BankAccount.sumPositiveBalances"
+    #   },
+    #    "added_methods": {
+    #        "BankAccount.getAccountSummary"
+    #    },
+    #    "removed_methods": {
+    #       "BankAccount.calculateInterestDivideByZero"
+    #    },
+    #    "added_tests": {
+    #        "BankAccountTest.testGetAccountSummary"
+    #    },
+    #    "modified_tests": {
+    #        "BankAccountTest.testTransferSuccess"
+    #    },
+    #    "removed_tests": {
+    #        "BankAccountTest.testCalculateInterestDivideByZero"
+    #    }
+   # }
+    #src_path = "java/original/src/main"  # Path to the class that needs to be tested
+    #test_path = "java/original/test"  # Path to the JUnit test class
+    #project_path = "java/original"
+    analyzer = DynamicJavaAnalyzer(project_path, static_analysis_results)
     results = analyzer.analyze()
-
-    if results:
-        analyzer.save_results_to_json(results)
-
-    print("Analysis complete.")
-
+    # analyzer.run_all_tests()
