@@ -22,7 +22,7 @@ class DynamicJavaAnalyzer:
         for root, _, files in os.walk(directory):
             for file in files:
                 if file.endswith(".java"):
-                    full_path = os.path.join(root, file)
+                    full_path = os.path.normpath(os.path.join(root, file))
                     java_files[file] = full_path  # Map filename to full path
         return java_files
 
@@ -89,28 +89,20 @@ class DynamicJavaAnalyzer:
         try:
             if test_methods:
                 # Construct the Maven command to run specific test methods
-                # Extract unique test methods
                 combined_tests = "+".join(sorted(set(test_methods)))
-
-                maven_command = ['mvn', 'test', f'-Dtest=BankAccountTest#{combined_tests}']
                 print(f"Running required tests: {combined_tests}")
-
-                try:
-                    # Run the Maven command and capture output
-                    result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
-                    print(result.stdout)  # Display Maven output
-                except subprocess.CalledProcessError as e:
-                    print(f"Error running required tests: {e.stderr}")
+                maven_command = ['D:\\Maven\\apache-maven-3.9.9\\bin\\mvn.cmd', 'test', f'-Dtest=BankAccountTest#{combined_tests}']
+                # maven_command = ['mvn', 'test', f'-Dtest=BankAccountTest#{combined_tests}']
             else:
                 # Default Maven command to run all tests
                 print("Running all tests...")
-                maven_command = ['mvn', 'clean', 'test']
+                maven_command = ['D:\\Maven\\apache-maven-3.9.9\\bin\\mvn.cmd', 'clean', 'test']
+                # maven_command = ['mvn', 'clean', 'test']
 
-            # Execute the Maven command
-            result = subprocess.run(
-                maven_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-            )
+            # Run the Maven command and capture output
+            result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
 
+            # Check the result and handle errors
             if result.returncode != 0:
                 print("Maven build and test failed with errors:")
                 print(result.stderr)
@@ -120,9 +112,15 @@ class DynamicJavaAnalyzer:
             print(result.stdout)
             return result.stdout
 
+        except subprocess.CalledProcessError as e:
+            # Handle subprocess errors globally
+            print(f"Error running Maven command: {e.stderr}")
+            return None
+
         finally:
             self.cleanup()
             os.chdir(current_directory)
+
 
     def extract_class_names(self, java_files):
         """
@@ -361,10 +359,11 @@ class DynamicJavaAnalyzer:
 
             self.cleanup()
 
-            print("Analysis complete.")
-            self.save_results_to_json(method_calls)
 
-            return method_calls
+            self.save_results_to_json(method_calls)
+            print("Analysis complete.")
+
+            return
 
 
 
@@ -400,9 +399,3 @@ if __name__ == "__main__":
     project_path = "java/original"
     analyzer = DynamicJavaAnalyzer(src_path, test_path, project_path, static_analysis_results)
     results = analyzer.analyze()
-
-    if results:
-        analyzer.save_results_to_json(results)
-
-    print("Analysis complete.")
-
