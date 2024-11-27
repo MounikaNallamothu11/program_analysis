@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="BankAccountTest" time="0.173" tests="6" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="BankAccountTest" time="0.155" tests="6" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.class.path" value="C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\original\target\test-classes;C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\original\target\classes;C:\Users\esc\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\esc\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\esc\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\esc\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\esc\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\esc\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
+    <property name="java.class.path" value="C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\modified\target\test-classes;C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\modified\target\classes;C:\Users\esc\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\esc\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\esc\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\esc\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\esc\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\esc\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
@@ -16,9 +16,10 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-21\bin"/>
-    <property name="sun.java.command" value="C:\Users\esc\AppData\Local\Temp\surefire8206613469430973471\surefirebooter-20241127201907341_3.jar C:\Users\esc\AppData\Local\Temp\surefire8206613469430973471 2024-11-27T20-19-05_730-jvmRun1 surefire-20241127201907341_1tmp surefire_0-20241127201907341_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\esc\AppData\Local\Temp\surefire17143755123032873765\surefirebooter-20241127203306210_3.jar C:\Users\esc\AppData\Local\Temp\surefire17143755123032873765 2024-11-27T20-33-05_294-jvmRun1 surefire-20241127203306210_1tmp surefire_0-20241127203306210_2tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\original\target\test-classes;C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\original\target\classes;C:\Users\esc\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\esc\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\esc\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\esc\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\esc\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\esc\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
+    <property name="test" value="BankAccountTest#testCalculateInterestDivideByZero+testDeposit+testGetAccountSummary+testSumPositiveBalances+testTransferInsufficientFunds+testTransferSuccess"/>
+    <property name="surefire.test.class.path" value="C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\modified\target\test-classes;C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\modified\target\classes;C:\Users\esc\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\esc\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\esc\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\esc\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\esc\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\esc\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="C:\Users\esc"/>
     <property name="user.language" value="en"/>
@@ -26,12 +27,12 @@
     <property name="java.version.date" value="2024-01-16"/>
     <property name="java.home" value="C:\Program Files\Java\jdk-21"/>
     <property name="file.separator" value="\"/>
-    <property name="basedir" value="C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\original"/>
+    <property name="basedir" value="C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\modified"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\esc\AppData\Local\Temp\surefire8206613469430973471\surefirebooter-20241127201907341_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\esc\AppData\Local\Temp\surefire17143755123032873765\surefirebooter-20241127203306210_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.2+13-LTS-58"/>
@@ -46,7 +47,7 @@
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
     <property name="java.io.tmpdir" value="C:\Users\esc\AppData\Local\Temp\"/>
     <property name="java.version" value="21.0.2"/>
-    <property name="user.dir" value="C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\original"/>
+    <property name="user.dir" value="C:\Users\esc\OneDrive\Documents\program analysis\program_analysis\java\modified"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="sun.os.patch.level" value=""/>
@@ -59,73 +60,39 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testTransferSuccess" classname="BankAccountTest" time="0.085">
+  <testcase name="testTransferSuccess" classname="BankAccountTest" time="0.077">
     <system-out><![CDATA[CALL testTransferSuccess
 CALL testTransferSuccess
-CALL testTransferSuccess
-CALL testTransferSuccess
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
 CALL BankAccount
 CALL BankAccount
 CALL BankAccount
 CALL BankAccount
 CALL transfer
 CALL transfer
-CALL transfer
-CALL transfer
-CALL withdraw
-CALL withdraw
 CALL withdraw
 CALL withdraw
 CALL deposit
 CALL deposit
-CALL deposit
-CALL deposit
 CALL add
 CALL add
-CALL add
-CALL add
-CALL getBalance
-CALL getBalance
 CALL getBalance
 CALL getBalance
 ]]></system-out>
   </testcase>
-  <testcase name="testTransferInsufficientFunds" classname="BankAccountTest" time="0.008">
+  <testcase name="testTransferInsufficientFunds" classname="BankAccountTest" time="0.004">
     <system-out><![CDATA[CALL testTransferInsufficientFunds
 CALL testTransferInsufficientFunds
-CALL testTransferInsufficientFunds
-CALL testTransferInsufficientFunds
 CALL BankAccount
 CALL BankAccount
 CALL BankAccount
 CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL transfer
-CALL transfer
 CALL transfer
 CALL transfer
 ]]></system-out>
   </testcase>
-  <testcase name="testSumPositiveBalances" classname="BankAccountTest" time="0.004">
+  <testcase name="testSumPositiveBalances" classname="BankAccountTest" time="0.008">
     <system-out><![CDATA[CALL testSumPositiveBalances
 CALL testSumPositiveBalances
-CALL testSumPositiveBalances
-CALL testSumPositiveBalances
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL BankAccount
 CALL BankAccount
 CALL BankAccount
 CALL BankAccount
@@ -136,20 +103,6 @@ CALL BankAccount
 CALL BankAccount
 CALL sumPositiveBalances
 CALL sumPositiveBalances
-CALL sumPositiveBalances
-CALL sumPositiveBalances
-CALL getBalance
-CALL getBalance
-CALL getBalance
-CALL getBalance
-CALL getBalance
-CALL getBalance
-CALL getBalance
-CALL getBalance
-CALL getBalance
-CALL getBalance
-CALL getBalance
-CALL getBalance
 CALL getBalance
 CALL getBalance
 CALL getBalance
@@ -164,37 +117,21 @@ CALL getBalance
 CALL getBalance
 ]]></system-out>
   </testcase>
-  <testcase name="testGetAccountSummary" classname="BankAccountTest" time="0.02">
+  <testcase name="testGetAccountSummary" classname="BankAccountTest" time="0.014">
     <system-out><![CDATA[CALL testGetAccountSummary
 CALL testGetAccountSummary
-CALL testGetAccountSummary
-CALL testGetAccountSummary
-CALL BankAccount
-CALL BankAccount
 CALL BankAccount
 CALL BankAccount
 CALL getAccountSummary
 CALL getAccountSummary
-CALL getAccountSummary
-CALL getAccountSummary
-CALL deposit
-CALL deposit
 CALL deposit
 CALL deposit
 CALL add
 CALL add
-CALL add
-CALL add
-CALL getAccountSummary
-CALL getAccountSummary
 CALL getAccountSummary
 CALL getAccountSummary
 CALL withdraw
 CALL withdraw
-CALL withdraw
-CALL withdraw
-CALL getAccountSummary
-CALL getAccountSummary
 CALL getAccountSummary
 CALL getAccountSummary
 ]]></system-out>
@@ -202,37 +139,21 @@ CALL getAccountSummary
   <testcase name="testDeposit" classname="BankAccountTest" time="0.003">
     <system-out><![CDATA[CALL testDeposit
 CALL testDeposit
-CALL testDeposit
-CALL testDeposit
-CALL BankAccount
-CALL BankAccount
 CALL BankAccount
 CALL BankAccount
 CALL deposit
 CALL deposit
-CALL deposit
-CALL deposit
 CALL add
 CALL add
-CALL add
-CALL add
-CALL getBalance
-CALL getBalance
 CALL getBalance
 CALL getBalance
 ]]></system-out>
   </testcase>
-  <testcase name="testCalculateInterestDivideByZero" classname="BankAccountTest" time="0.008">
+  <testcase name="testCalculateInterestDivideByZero" classname="BankAccountTest" time="0.005">
     <system-out><![CDATA[CALL testCalculateInterestDivideByZero
 CALL testCalculateInterestDivideByZero
-CALL testCalculateInterestDivideByZero
-CALL testCalculateInterestDivideByZero
 CALL BankAccount
 CALL BankAccount
-CALL BankAccount
-CALL BankAccount
-CALL calculateInterest
-CALL calculateInterest
 CALL calculateInterest
 CALL calculateInterest
 ]]></system-out>

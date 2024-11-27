@@ -1,0 +1,34 @@
+{
+    "withdraw": [
+        "testTransferSuccess",
+        "testGetAccountSummary"
+    ],
+    "add": [
+        "testTransferSuccess",
+        "testGetAccountSummary",
+        "testDeposit"
+    ],
+    "transfer": [
+        "testTransferSuccess",
+        "testTransferInsufficientFunds"
+    ],
+    "getBalance": [
+        "testTransferSuccess",
+        "testSumPositiveBalances",
+        "testDeposit"
+    ],
+    "deposit": [
+        "testTransferSuccess",
+        "testGetAccountSummary",
+        "testDeposit"
+    ],
+    "sumPositiveBalances": [
+        "testSumPositiveBalances"
+    ],
+    "getAccountSummary": [
+        "testGetAccountSummary"
+    ],
+    "calculateInterest": [
+        "testCalculateInterestDivideByZero"
+    ]
+}

@@ -12,6 +12,7 @@ class DynamicJavaAnalyzer:
         self.project_path = project_path
         self.static_analysis_results = static_analysis_results
         self.original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"  # Path to the original JSON mapping
+        self.test_answers = []
 
     def get_java_files(self, directory):
         """
@@ -89,26 +90,31 @@ class DynamicJavaAnalyzer:
         try:
             if test_methods:
                 # Construct the Maven command to run specific test methods
+                self.test_answers.extend(test_methods)
+                self.test_answers = list(dict.fromkeys(self.test_answers))
                 combined_tests = "+".join(sorted(set(test_methods)))
                 print(f"Running required tests: {combined_tests}")
                 maven_command = ['mvn', 'test', f'-Dtest=BankAccountTest#{combined_tests}']
             else:
                 # Default Maven command to run all tests
                 print("Running all tests...")
-                maven_command = ['mvn', 'clean', 'test']
+                maven_command = ['mvn','test']
 
             # Run the Maven command and capture output
-            result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
+            # result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
+            process = Popen(maven_command,stdout=PIPE, stderr=PIPE, shell=True)
+            result, stderr = process.communicate()
 
             # Check the result and handle errors
-            if result.returncode != 0:
+            if process.returncode != 0:
                 print("Maven build and test failed with errors:")
-                print(result.stderr)
+                print(result)
                 return None
 
             # Return the stdout (test results) for further analysis
-            print(result.stdout)
-            return result.stdout
+
+            print(result.decode())
+            return result.decode()
 
         except subprocess.CalledProcessError as e:
             # Handle subprocess errors globally
@@ -334,7 +340,7 @@ class DynamicJavaAnalyzer:
                     test_methods_to_run = list({test for tests in affected_methods_testMethods_Mapping .values() for test in tests})
                     self.compile_and_run_tests(test_methods_to_run)
 
-
+            print(f"The affected test cases are: {self.test_answers}")
             print("Analysis complete.")
             self.cleanup()
             return
@@ -363,6 +369,7 @@ class DynamicJavaAnalyzer:
 
 
             self.save_results_to_json(method_calls)
+
             print("Analysis complete.")
 
             return

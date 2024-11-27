@@ -8,6 +8,10 @@ public class BankAccountTest {
 
     @Test
     public void testDeposit() {
+System.out.println("CALL testDeposit");
+System.out.println("CALL testDeposit");
+System.out.println("CALL testDeposit");
+System.out.println("CALL testDeposit");
         BankAccount account = new BankAccount(1, 100);
         account.deposit(50);
         assertEquals(150, account.getBalance());
@@ -15,6 +19,10 @@ public class BankAccountTest {
 
     @Test
     public void testTransferSuccess() {
+System.out.println("CALL testTransferSuccess");
+System.out.println("CALL testTransferSuccess");
+System.out.println("CALL testTransferSuccess");
+System.out.println("CALL testTransferSuccess");
         BankAccount sourceAccount = new BankAccount(1, 100);
         BankAccount destinationAccount = new BankAccount(2, 50);
         String result = sourceAccount.transfer(50, destinationAccount);
@@ -24,6 +32,10 @@ public class BankAccountTest {
 
     @Test
     public void testTransferInsufficientFunds() {
+System.out.println("CALL testTransferInsufficientFunds");
+System.out.println("CALL testTransferInsufficientFunds");
+System.out.println("CALL testTransferInsufficientFunds");
+System.out.println("CALL testTransferInsufficientFunds");
         BankAccount sourceAccount = new BankAccount(1, 100);
         BankAccount destinationAccount = new BankAccount(2, 50);
         String result = sourceAccount.transfer(150, destinationAccount);
@@ -33,12 +45,20 @@ public class BankAccountTest {
 
     @Test
     public void testCalculateInterestDivideByZero() {
+System.out.println("CALL testCalculateInterestDivideByZero");
+System.out.println("CALL testCalculateInterestDivideByZero");
+System.out.println("CALL testCalculateInterestDivideByZero");
+System.out.println("CALL testCalculateInterestDivideByZero");
         BankAccount account = new BankAccount(1, 100);
         assertThrows(ArithmeticException.class, () -> account.calculateInterest(0));
     }
 
     @Test
     public void testSumPositiveBalances() {
+System.out.println("CALL testSumPositiveBalances");
+System.out.println("CALL testSumPositiveBalances");
+System.out.println("CALL testSumPositiveBalances");
+System.out.println("CALL testSumPositiveBalances");
         List<BankAccount> accounts = new ArrayList<>();
         accounts.add(new BankAccount(1, 100)); // Positive balance
         accounts.add(new BankAccount(2, -50)); // Negative balance
@@ -51,6 +71,10 @@ public class BankAccountTest {
 
     @Test
     public void testGetAccountSummary() {
+System.out.println("CALL testGetAccountSummary");
+System.out.println("CALL testGetAccountSummary");
+System.out.println("CALL testGetAccountSummary");
+System.out.println("CALL testGetAccountSummary");
         BankAccount account = new BankAccount(1, 100);
         String summary = account.getAccountSummary();
         assertEquals("Account 1 has a balance of 100.0", summary);
