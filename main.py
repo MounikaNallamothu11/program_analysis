@@ -131,8 +131,6 @@ def main():
     if added_tests:
         print(f"\nNew tests were added but still haven't run: {added_tests}")
 
-    print("")
-
 
     if TESTING:
         # DependencyTracker is a class that creates an AST of a Java file to track all caller methods of a given list of methods
@@ -142,7 +140,7 @@ def main():
 
 
     # Get all caller methods for the directly affected methods
-    indirectly_affected_methods = dependencyTracker.provide_all_caller_methods(directly_affected_methods)
+    indirectly_affected_methods = dependencyTracker.provide_all_caller_methods(directly_affected_methods, printAST=True)
 
     print(f"\nIndirectly affected methods: {indirectly_affected_methods}\n")
 

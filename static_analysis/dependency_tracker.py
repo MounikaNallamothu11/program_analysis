@@ -184,7 +184,7 @@ class DependencyTracker:
 
         return callers
 
-    def provide_all_caller_methods(self, methods: list[str]) -> set[str]:
+    def provide_all_caller_methods(self, methods: list[str], printAST: bool = False) -> set[str]:
         """
         Provide all methods that call the given list of methods.
         """
@@ -194,7 +194,9 @@ class DependencyTracker:
         # Filter out non-user-defined methods
         filtered_ast = self.filter_non_user_defined_methods(project_ast)
 
-        print(filtered_ast)
+        if printAST:
+            print("\n AST Tree:\n")
+            print(filtered_ast)
 
         # Extract caller methods
         return self.extract_callers(set(methods), filtered_ast)
