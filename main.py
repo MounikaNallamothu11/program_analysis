@@ -136,9 +136,9 @@ def main():
 
     if TESTING:
         # DependencyTracker is a class that creates an AST of a Java file to track all caller methods of a given list of methods
-        dependencyTracker = DependencyTracker(modified_path)
+        dependencyTracker = DependencyTracker(modified_path + "/src")
     else:
-        dependencyTracker = DependencyTracker(project_path)
+        dependencyTracker = DependencyTracker(project_path + "/src")
 
 
     # Get all caller methods for the directly affected methods
