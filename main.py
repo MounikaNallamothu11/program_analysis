@@ -11,6 +11,23 @@ from static_analysis.dependency_tracker import DependencyTracker
 TESTING = True
 
 
+
+def find_src_folder(project_path):
+    """
+    Search for the `src` folder or the folder containing Java source files (.java) within the project directory.
+    """
+    for root, dirs, files in os.walk(project_path):
+        # Check if the folder is explicitly named "src"
+        if os.path.basename(root) == "src":
+            return root
+        
+        # Check if the folder contains Java source files
+        if any(file.endswith(".java") for file in files):
+            return root  # Return the first folder containing Java files
+
+    return None  # No `src` folder or Java files found
+
+
 def select_folder(prompt="Select the project folder"):
     """
     Open a file explorer dialog to select a folder.
@@ -134,9 +151,9 @@ def main():
 
     if TESTING:
         # DependencyTracker is a class that creates an AST of a Java file to track all caller methods of a given list of methods
-        dependencyTracker = DependencyTracker(modified_path + "/src")
+        dependencyTracker = DependencyTracker(find_src_folder(modified_path))
     else:
-        dependencyTracker = DependencyTracker(project_path + "/src")
+        dependencyTracker = DependencyTracker(find_src_folder(project_path))
 
 
     # Get all caller methods for the directly affected methods
@@ -147,6 +164,14 @@ def main():
     # Combine directly and indirectly affected methods
     all_possible_affected_methods = directly_affected_methods | indirectly_affected_methods
     print(f"All possible affected methods: {all_possible_affected_methods}\n")
+
+        # changes_dynamic = {
+    #         "directly_affected_methods": directly_affected_methods,
+    #         "directly_affected_tests": directly_affected_tests,
+    #         "removed_methods": removed_methods,
+    #         "added_tests": added_tests,
+    #         "removed_tests": removed_tests
+    #     }
 
 
 if __name__ == "__main__":

@@ -54,133 +54,149 @@ class DependencyTracker:
 
         return project_ast
 
+
     def parse_java_code(self, code: str) -> ASTNode:
-        """
-        Parse a single Java file to build an AST, resolving variable types for method calls on parameters,
-        objects from collections, and static method calls.
-        """
-        lines = code.splitlines()
-        root = self.ASTNode("file", "file-root")
-
-        class_node = None
-        method_node = None
-
-        # Dictionary to track variable-to-class mappings
-        variable_class_map = {}
-
-        for line in lines:
-            line = line.strip()
-
-            # Check for class declaration
-            class_match = re.match(r'(?:\b(public|private|protected)\s+)?\bclass\s+(\w+)', line)
-            if class_match:
-                class_name = class_match.group(2)
-                class_node = self.ASTNode("class", class_name)
-                root.add_child(class_node)
-                self.classes[class_name] = class_node
-                continue
-
-            # Check for method declaration
-            method_match = re.match(
-                r'\b(public|private|protected|static|final|synchronized|native|abstract)?\s*(\b(public|private|protected|static|final|synchronized|native|abstract)\s+)*(\w+)\s+(\w+)\s*\((.*?)\)\s*\{',
-                line,
-            )
-            if method_match:
-                method_name = method_match.group(5)
-                method_params = method_match.group(6)  # Parameters inside parentheses
-                method_node = self.ASTNode("method", method_name)
-                if class_node:
-                    self.user_defined_methods.add(f"{class_node.name}.{method_name}")
-                    class_node.add_child(method_node)
-
-                    # Parse method parameters and add them to the variable map
-                    for param in method_params.split(","):
-                        param = param.strip()
-                        param_match = re.match(r'(\w+)\s+(\w+)', param)
-                        if param_match:
-                            param_type = param_match.group(1)  # Type of the parameter (e.g., `BankAccount`)
-                            param_name = param_match.group(2)  # Name of the parameter (e.g., `destinationAccount`)
-                            variable_class_map[param_name] = param_type
+            """
+            Parse a single Java file to build an AST, resolving variable types for method calls on parameters,
+            objects from collections, and static method calls.
+            """
+            lines = code.splitlines()
+            root = self.ASTNode("file", "file-root")
+    
+            class_node = None
+            method_node = None
+    
+            # Dictionary to track variable-to-class mappings
+            variable_class_map = {}
+            for line in lines:
+                line = line.strip()
+    
+                # Check for class declaration
+                class_match = re.match(r'(?:\b(public|private|protected)\s+)?\bclass\s+(\w+)', line)
+                if class_match:
+                    class_name = class_match.group(2)
+                    class_node = self.ASTNode("class", class_name)
+                    root.add_child(class_node)
+                    self.classes[class_name] = class_node
                     continue
-
-            # Check for instantiations (e.g., `ClassName obj = new ClassName(...)`)
-            instantiation_match = re.search(
-                r'\b([a-zA-Z_]\w*)\s+([a-zA-Z_]\w*)\s*=\s*new\s+([a-zA-Z_]\w*)\s*\(.*?\);',
-                line
-            )
-            if instantiation_match and method_node:
-                instantiated_class = instantiation_match.group(1)  # Class being instantiated
-                variable_name = instantiation_match.group(2)  # Variable holding the instance
-                constructor_call = self.ASTNode("call", f"{instantiated_class}.{instantiated_class}")  # Constructor call
-                method_node.add_child(constructor_call)
-
-                # Add variable-to-class mapping
-                variable_class_map[variable_name] = instantiated_class
-                continue
-
-            # Match both System.out.println and System.out.print
-            print_match = re.search(r'System\.out\.(println|print)\s*\(.*?\b([\w.]+)\((.*?)\)\s*\)', line)
-
-            if print_match and method_node:
-                full_method_call = print_match.group(2)  # e.g., "test" or "account.test1"
-                arguments = print_match.group(3)  # The arguments inside the method call
-
-                # Determine if it's a standalone or class-level method
-                if '.' in full_method_call:
-                    caller_class, method_name = full_method_call.rsplit('.', 1)
-                    if caller_class in variable_class_map:  # It's a variable
-                        associated_class = variable_class_map[caller_class]
-                        caller_class = associated_class
-                else:
+    
+                # Check for method declaration
+                method_match = re.match(
+                    r'\b(public|private|protected|static|final|synchronized|native|abstract)?\s*(\b(public|private|protected|static|final|synchronized|native|abstract)\s+)*(\w+)\s+(\w+)\s*\((.*?)\)\s*\{',
+                    line,
+                )
+                if method_match:
+                    method_name = method_match.group(5)
+                    method_params = method_match.group(6)  # Parameters inside parentheses
+                    method_node = self.ASTNode("method", method_name)
+                    if class_node:
+                        self.user_defined_methods.add(f"{class_node.name}.{method_name}")
+                        class_node.add_child(method_node)
+    
+                        # Parse method parameters and add them to the variable map
+                        for param in method_params.split(","):
+                            param = param.strip()
+                            param_match = re.match(r'(\w+)\s+(\w+)', param)
+                            if param_match:
+                                param_type = param_match.group(1)  # Type of the parameter (e.g., `BankAccount`)
+                                param_name = param_match.group(2)  # Name of the parameter (e.g., `destinationAccount`)
+                                variable_class_map[param_name] = param_type
+                        continue
+    
+                # Check for instantiations (e.g., `ClassName obj = new ClassName(...)`)
+                instantiation_match = re.search(
+                    r'\b([a-zA-Z_]\w*)\s+([a-zA-Z_]\w*)\s*=\s*new\s+([a-zA-Z_]\w*)\s*\(.*?\);',
+                    line
+                )
+                if instantiation_match and method_node:
+                    instantiated_class = instantiation_match.group(1)  # Class being instantiated
+                    variable_name = instantiation_match.group(2)  # Variable holding the instance
+                    constructor_call = self.ASTNode("call", f"{instantiated_class}.{instantiated_class}")  # Constructor call
+                    method_node.add_child(constructor_call)
+    
+                    # Add variable-to-class mapping
+                    variable_class_map[variable_name] = instantiated_class
+                    continue
+    
+                println_call_match = re.search(r'System\.out\.println\s*\(.*?\b([\w.]+)\((.*?)\)\s*\)',line)
+                if println_call_match and method_node:
+                    full_method_call = println_call_match.group(1)  # e.g., "test" or "account.test1"
+                    arguments = println_call_match.group(2)  # The arguments inside the method call
+                    # Determine if it's a standalone or class-level method
+                    if '.' in full_method_call:
+                        caller_class, method_name = full_method_call.rsplit('.', 1)
+                        if caller_class in variable_class_map:  # It's a variable
+                            associated_class = variable_class_map[caller_class]
+                            caller_class = associated_class
+                    else:
+                        caller_class = class_node.name if class_node else "UnknownClass"
+                        method_name = full_method_call
+    
+                    call_node = self.ASTNode("call", f"{caller_class}.{method_name}")
+                    # Avoid duplicate calls
+                    if not any(child.name == call_node.name for child in method_node.children):
+                        method_node.add_child(call_node)
+                    continue
+    
+    
+                # Handle enhanced for-loops (e.g., `for (ClassName var : collection)`)
+                enhanced_for_loop_match = re.search(r'for\s*\(\s*(\w+)\s+(\w+)\s*:\s*(\w+)\s*\)', line)
+                if enhanced_for_loop_match:
+                    iterated_class = enhanced_for_loop_match.group(1)  # Type of the iterated variable (e.g., `BankAccount`)
+                    iterated_var = enhanced_for_loop_match.group(2)  # Name of the iterated variable (e.g., `account`)
+                    variable_class_map[iterated_var] = iterated_class  # Map the variable to its class
+                    continue
+    
+                nested_call_match = re.search(r'\b([\w.]+)\((.*?\b[\w.]+\((.*?)\)|.*?)\)\s*;',line)
+                #print('nested',nested_call_match,line)
+                if nested_call_match and method_node:
+                    full_method_call = nested_call_match.group(1)  # e.g., "accounts.add"
+                    arguments = nested_call_match.group(2)  # Arguments inside the method call
+    
+                    # Detect if it's a nested call
+                    nested_call_match_inner = re.search(r'\b([\w.]+)\((.*?)\)', arguments)
+                    if nested_call_match_inner:
+                        # Handle the inner nested call
+                        inner_full_method_call = nested_call_match_inner.group(1)  # e.g., "new bankaccount" or "abc.withdraw"
+                        if '.' in inner_full_method_call:
+                            inner_caller_class, inner_method_name = inner_full_method_call.rsplit('.', 1)
+                        else:                        
+                            inner_method_name = inner_full_method_call.replace("new ", "")
+                            inner_caller_class = inner_method_name if "new " in arguments else "UnknownClass"
+    
+                        # Add the inner call node
+                        inner_call_node = self.ASTNode("call", f"{inner_caller_class}.{inner_method_name}")
+                        if not any(child.name == inner_call_node.name for child in method_node.children):
+                            method_node.add_child(inner_call_node)
+    
+                    # Split outer call (e.g., "accounts.add")
+                    if '.' in full_method_call:                                        
+                        caller_class, method_name = full_method_call.rsplit('.', 1)
+                        if caller_class in variable_class_map:
+                            caller_class = variable_class_map[caller_class]                                                                              
+                            self.user_defined_methods.add(f"{caller_class}.{method_name}")
+                    else:
+                        caller_class = class_node.name if class_node else "UnknownClass"
+                        method_name = full_method_call
+    
+                    # Add the outer call node
+                    outer_call_node = self.ASTNode("call", f"{caller_class}.{method_name}")
+                    if not any(child.name == outer_call_node.name for child in method_node.children):
+                        method_node.add_child(outer_call_node)
+                    continue
+    
+                # Check for standalone method calls within the same class (e.g., `method(...)`)
+                standalone_call_match = re.search(r'\b(\w+)\s*\((.*?)\)\s*;', line)
+                if standalone_call_match and method_node:
+                    method_name = standalone_call_match.group(1)
+                    # If standalone, assume the call is within the same class
                     caller_class = class_node.name if class_node else "UnknownClass"
-                    method_name = full_method_call
+                    call_node = self.ASTNode("call", f"{caller_class}.{method_name}")
+                    # Avoid duplicate calls
+                    if not any(child.name == call_node.name for child in method_node.children):
+                        method_node.add_child(call_node)
 
-                call_node = self.ASTNode("call", f"{caller_class}.{method_name}")
-
-                # Avoid duplicate calls
-                if not any(child.name == call_node.name for child in method_node.children):
-                    method_node.add_child(call_node)
-                continue
-
-            # Check for method calls on variables (e.g., `obj.method(...)`)
-            variable_method_call_match = re.search(r'\b([a-zA-Z_]\w*)\.(\w+)\s*\((.*?)\)', line)
-            if variable_method_call_match and method_node:
-                caller = variable_method_call_match.group(1)  # Variable or class calling the method
-                method_name = variable_method_call_match.group(2)  # Method being called
-
-                # Look up the class associated with the variable
-                if caller in variable_class_map:  # It's a variable
-                    associated_class = variable_class_map[caller]
-                    call_node = self.ASTNode("call", f"{associated_class}.{method_name}")
-                else:  # It's a class (static method)
-                    call_node = self.ASTNode("call", f"{caller}.{method_name}")
-
-                # Avoid duplicate calls
-                if not any(child.name == call_node.name for child in method_node.children):
-                    method_node.add_child(call_node)
-                continue
-
-            # Handle enhanced for-loops (e.g., `for (ClassName var : collection)`)
-            enhanced_for_loop_match = re.search(r'for\s*\(\s*(\w+)\s+(\w+)\s*:\s*(\w+)\s*\)', line)
-            if enhanced_for_loop_match:
-                iterated_class = enhanced_for_loop_match.group(1)  # Type of the iterated variable (e.g., `BankAccount`)
-                iterated_var = enhanced_for_loop_match.group(2)  # Name of the iterated variable (e.g., `account`)
-                variable_class_map[iterated_var] = iterated_class  # Map the variable to its class
-                continue
-
-            # Check for standalone method calls within the same class (e.g., `method(...)`)
-            standalone_call_match = re.search(r'\b(\w+)\s*\((.*?)\)\s*;', line)
-            if standalone_call_match and method_node:
-                method_name = standalone_call_match.group(1)
-                # If standalone, assume the call is within the same class
-                caller_class = class_node.name if class_node else "UnknownClass"
-                call_node = self.ASTNode("call", f"{caller_class}.{method_name}")
-                # Avoid duplicate calls
-                if not any(child.name == call_node.name for child in method_node.children):
-                    method_node.add_child(call_node)
-
-        return root
-
+            return root
 
 
     def extract_callers(self, target_methods: set[str], project_ast: ASTNode) -> set[str]:
