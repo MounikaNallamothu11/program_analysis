@@ -104,6 +104,8 @@ class DynamicJavaAnalyzer:
                     class_name, test_name = test.split('.')
                     test_groups[class_name].append(test_name)
 
+                command_logs = ""
+
                 # Construct the Maven command to run specific test methods
                 for class_name, tests in test_groups.items():
                     self.test_answers.extend(test_methods)
@@ -123,7 +125,9 @@ class DynamicJavaAnalyzer:
                     maven_command = [self.maven_path, 'test', f'-Dtest={class_name}#{test_cases}','-Dmaven.test.failure.ignore=true']
 
                     # Run the Maven command and capture output
-                    return self.run_maven_command(maven_command)
+                    command_logs += self.run_maven_command(maven_command)
+
+                return command_logs
                     
             else:
                 # Default Maven command to run all tests
