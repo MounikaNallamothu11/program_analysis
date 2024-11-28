@@ -12,8 +12,8 @@ import subprocess
 
 class DynamicJavaAnalyzer:
     def __init__(self, project_path, static_analysis_results):
-        self.src_path = find_path_to_folder(project_path,"/src")  # Path to the class that needs to be tested
-        self.test_path = find_path_to_folder(project_path,"/test")  # Path to the JUnit test class
+        self.src_path = find_path_to_folder(project_path, "src")  # Path to the class that needs to be tested
+        self.test_path = find_path_to_folder(project_path, "test")  # Path to the JUnit test class
         self.maven_path = load_maven_path()  # Path to the Maven executable
 
         self.project_path = project_path
@@ -116,7 +116,7 @@ class DynamicJavaAnalyzer:
                     maven_command = [self.maven_path, 'test', f'-Dtest={class_name}#{test_cases}']
 
                     # Run the Maven command and capture output
-                    self.run_maven_command(maven_command)
+                    return self.run_maven_command(maven_command)
                     
             else:
                 # Default Maven command to run all tests
@@ -124,7 +124,7 @@ class DynamicJavaAnalyzer:
                 maven_command = [self.maven_path,'test']
 
                 # Run the Maven command and capture output
-                self.run_maven_command(maven_command)
+                return self.run_maven_command(maven_command)
 
         except subprocess.CalledProcessError as e:
             # Handle subprocess errors globally

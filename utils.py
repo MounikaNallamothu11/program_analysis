@@ -9,19 +9,38 @@ from tkinter import filedialog
 CONFIG_FILE = "config.json"
 
 
+import os
+
+import os
+
 def find_path_to_folder(project_path, folder_name):
     """
-    Search for the `src` folder or the folder containing Java source files (.java) within the project directory.
-    """
-    for root, dirs, files in os.walk(project_path):
-        if os.path.basename(root) == folder_name:
-            return root
+    Search for a specific folder within the project directory, excluding folders inside "out".
+    
+    Args:
+        project_path (str): The base path to start searching.
+        folder_name (str): The name of the folder to find.
         
-        # Check if the folder contains Java source files
-        if any(file.endswith(".java") for file in files):
-            return root  # Return the first folder containing Java files
+    Returns:
+        str: The path to the specified folder or None if not found.
+    """
+    # Normalize folder_name to avoid issues with leading/trailing slashes
+    folder_name = folder_name.strip(os.sep)
+    
+    for root, dirs, files in os.walk(project_path):
+        # Normalize root for comparison
+        normalized_root = os.path.normpath(root)
+        
+        # Skip folders inside the "out" folder
+        if "out" in normalized_root.split(os.sep):
+            continue
 
-    return None  # No `folder_name` folder or Java files found
+        # Match exact folder name
+        if os.path.basename(normalized_root) == folder_name:
+            return normalized_root
+
+    return None  # No matching folder found
+
 
 
 def select_folder(prompt="Select the project folder"):

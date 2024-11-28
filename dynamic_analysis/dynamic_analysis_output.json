@@ -1,0 +1,34 @@
+{
+    "BankAccount.add": [
+        "BankAccountTest.testTransferSuccess",
+        "BankAccountTest.testGetAccountSummary",
+        "BankAccountTest.testDeposit"
+    ],
+    "BankAccount.transfer": [
+        "BankAccountTest.testTransferSuccess",
+        "BankAccountTest.testTransferInsufficientFunds"
+    ],
+    "BankAccount.getBalance": [
+        "BankAccountTest.testTransferSuccess",
+        "BankAccountTest.testSumPositiveBalances",
+        "BankAccountTest.testDeposit"
+    ],
+    "BankAccount.withdraw": [
+        "BankAccountTest.testTransferSuccess",
+        "BankAccountTest.testGetAccountSummary"
+    ],
+    "BankAccount.deposit": [
+        "BankAccountTest.testTransferSuccess",
+        "BankAccountTest.testGetAccountSummary",
+        "BankAccountTest.testDeposit"
+    ],
+    "BankAccount.sumPositiveBalances": [
+        "BankAccountTest.testSumPositiveBalances"
+    ],
+    "BankAccount.getAccountSummary": [
+        "BankAccountTest.testGetAccountSummary"
+    ],
+    "BankAccount.calculateInterest": [
+        "BankAccountTest.testCalculateInterestDivideByZero"
+    ]
+}
