@@ -122,7 +122,7 @@ def main():
 
     # Dynamic analysis
     changes_dynamic = {
-        "directly_affected_methods": directly_affected_methods,
+        "all_possible_affected_methods": all_possible_affected_methods,
         "removed_methods": removed_methods,
         "added_methods": added_methods,
         "added_tests": added_tests,

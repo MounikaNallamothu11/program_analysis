@@ -345,7 +345,7 @@ class DynamicJavaAnalyzer:
             if self.static_analysis_results:
                 print(f"Static analysis results found: {self.static_analysis_results}")
                 # Segregate affected methods and tests
-                modified_methods = self.static_analysis_results.get("directly_affected_methods", set())
+                modified_methods = self.static_analysis_results.get("all_possible_affected_methods", set())
                 removed_methods = self.static_analysis_results.get("removed_methods", set())
                 added_methods = self.static_analysis_results.get("added_methods", set())
                 added_tests = self.static_analysis_results.get("added_tests", set())
