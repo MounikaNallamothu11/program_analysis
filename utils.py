@@ -1,5 +1,6 @@
 import os
 import git
+import time
 import json
 import shutil
 import tkinter as tk
@@ -85,3 +86,24 @@ def save_last_project_path(path):
             json.dump({"last_project_path": path}, f)
     except Exception as e:
         print(f"Error saving to {CONFIG_FILE}: {e}")
+
+
+def measure_time(label, func, *args, **kwargs):
+    """
+    Measure the execution time of a function.
+
+    Args:
+        label (str): The name of the process being measured.
+        func (callable): The function to execute.
+        *args: Positional arguments for the function.
+        **kwargs: Keyword arguments for the function.
+
+    Returns:
+        tuple: (result, elapsed_time_ms)
+            result: The return value of the function.
+            elapsed_time_ms: The time taken to execute in milliseconds.
+    """
+    start_time = time.perf_counter()
+    result = func(*args, **kwargs)
+    elapsed_time_ms = (time.perf_counter() - start_time) * 1000
+    return result, elapsed_time_ms
