@@ -13,6 +13,8 @@ SHOW_METHOD_BODIES = False
 USE_LAST_PROJECT_PATH = False
 # AUTO_RERUN_AFFECTED_TESTS = True TODO: Implement this flag to automatically rerun affected tests after dynamic analysis
 
+# ADD YOUR MAVEN PATH IN config.json!
+
 
 def main():
     """

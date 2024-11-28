@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="BankAccountTest" time="0.248" tests="6" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="BankAccountTest" time="0.146" tests="6" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="BR"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-17\bin"/>
-    <property name="sun.java.command" value="C:\Users\victo\AppData\Local\Temp\surefire8781412570834993636\surefirebooter-20241128123521451_3.jar C:\Users\victo\AppData\Local\Temp\surefire8781412570834993636 2024-11-28T12-35-20_391-jvmRun1 surefire-20241128123521451_1tmp surefire_0-20241128123521451_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\victo\AppData\Local\Temp\surefire10693271103829570113\surefirebooter-20241128124940000_3.jar C:\Users\victo\AppData\Local\Temp\surefire10693271103829570113 2024-11-28T12-49-39_044-jvmRun1 surefire-20241128124940000_1tmp surefire_0-20241128124940000_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java\modified\target\test-classes;C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java\modified\target\classes;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\victo\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\victo\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\victo\AppData\Local\Temp\surefire8781412570834993636\surefirebooter-20241128123521451_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\victo\AppData\Local\Temp\surefire10693271103829570113\surefirebooter-20241128124940000_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.10+11-LTS-240"/>
@@ -56,7 +56,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testTransferSuccess" classname="BankAccountTest" time="0.127">
+  <testcase name="testTransferSuccess" classname="BankAccountTest" time="0.08">
     <system-out><![CDATA[CALL BankAccount.BankAccount
 CALL BankAccount.BankAccount
 CALL BankAccount.transfer
@@ -64,36 +64,29 @@ CALL BankAccount.withdraw
 CALL BankAccount.deposit
 CALL BankAccount.add
 CALL BankAccount.getBalance
-Current balance: 100.0
 ]]></system-out>
   </testcase>
-  <testcase name="testTransferInsufficientFunds" classname="BankAccountTest" time="0.004">
+  <testcase name="testTransferInsufficientFunds" classname="BankAccountTest" time="0.003">
     <system-out><![CDATA[CALL BankAccount.BankAccount
 CALL BankAccount.BankAccount
 CALL BankAccount.transfer
 ]]></system-out>
   </testcase>
-  <testcase name="testSumPositiveBalances" classname="BankAccountTest" time="0.006">
+  <testcase name="testSumPositiveBalances" classname="BankAccountTest" time="0.004">
     <system-out><![CDATA[CALL BankAccount.BankAccount
 CALL BankAccount.BankAccount
 CALL BankAccount.BankAccount
 CALL BankAccount.BankAccount
 CALL BankAccount.sumPositiveBalances
 CALL BankAccount.getBalance
-Current balance: 100.0
 CALL BankAccount.getBalance
-Current balance: 100.0
 CALL BankAccount.getBalance
-Current balance: -50.0
 CALL BankAccount.getBalance
-Current balance: 200.0
 CALL BankAccount.getBalance
-Current balance: 200.0
 CALL BankAccount.getBalance
-Current balance: 0.0
 ]]></system-out>
   </testcase>
-  <testcase name="testGetAccountSummary" classname="BankAccountTest" time="0.024">
+  <testcase name="testGetAccountSummary" classname="BankAccountTest" time="0.01">
     <system-out><![CDATA[CALL BankAccount.BankAccount
 CALL BankAccount.getAccountSummary
 CALL BankAccount.deposit
@@ -103,15 +96,14 @@ CALL BankAccount.withdraw
 CALL BankAccount.getAccountSummary
 ]]></system-out>
   </testcase>
-  <testcase name="testDeposit" classname="BankAccountTest" time="0.004">
+  <testcase name="testDeposit" classname="BankAccountTest" time="0.002">
     <system-out><![CDATA[CALL BankAccount.BankAccount
 CALL BankAccount.deposit
 CALL BankAccount.add
 CALL BankAccount.getBalance
-Current balance: 150.0
 ]]></system-out>
   </testcase>
-  <testcase name="testCalculateInterestDivideByZero" classname="BankAccountTest" time="0.008">
+  <testcase name="testCalculateInterestDivideByZero" classname="BankAccountTest" time="0.006">
     <system-out><![CDATA[CALL BankAccount.BankAccount
 CALL BankAccount.calculateInterest
 ]]></system-out>

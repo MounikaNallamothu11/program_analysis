@@ -107,3 +107,36 @@ def measure_time(label, func, *args, **kwargs):
     result = func(*args, **kwargs)
     elapsed_time_ms = (time.perf_counter() - start_time) * 1000
     return result, elapsed_time_ms
+
+
+def load_maven_path(config_file="config.json"):
+    """
+    Loads the Maven path from the specified configuration file.
+
+    Args:
+        config_file (str): Path to the configuration file (default: "config.json").
+
+    Returns:
+        str: The Maven path if successfully loaded, otherwise None.
+    """
+    if not os.path.isfile(config_file):
+        print(f"Configuration file '{config_file}' not found.")
+        return None
+
+    try:
+        with open(config_file, "r") as file:
+            config = json.load(file)
+        
+        maven_path = config.get("maven_path", "").strip()
+        if not maven_path:
+            print("Maven path is missing or empty in the configuration file.")
+            return None
+        
+        return maven_path
+
+    except json.JSONDecodeError as e:
+        print(f"Error parsing the configuration file: {e}")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None

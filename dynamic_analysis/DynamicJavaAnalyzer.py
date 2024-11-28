@@ -4,7 +4,7 @@ import re
 import shutil
 import json
 import subprocess
-from utils import find_path_to_folder
+from utils import find_path_to_folder, load_maven_path
 from collections import defaultdict
 import platform
 import subprocess
@@ -14,6 +14,8 @@ class DynamicJavaAnalyzer:
     def __init__(self, project_path, static_analysis_results):
         self.src_path = find_path_to_folder(project_path,"/src")  # Path to the class that needs to be tested
         self.test_path = find_path_to_folder(project_path,"/test")  # Path to the JUnit test class
+        self.maven_path = load_maven_path()  # Path to the Maven executable
+
         self.project_path = project_path
         self.static_analysis_results = static_analysis_results
         self.original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"  # Path to the original JSON mapping
@@ -111,7 +113,7 @@ class DynamicJavaAnalyzer:
 
                     test_cases = ",".join(sorted(set(tests)))
 
-                    maven_command = ['C:\\Users\\victo\\Desktop\\DTU\Autumn_24\\Program Analysis\\Project_Git\\apache-maven-3.9.9\\bin\\mvn.cmd', 'test', f'-Dtest={class_name}#{test_cases}']
+                    maven_command = [self.maven_path, 'test', f'-Dtest={class_name}#{test_cases}']
 
                     # Run the Maven command and capture output
                     self.run_maven_command(maven_command)
@@ -119,7 +121,7 @@ class DynamicJavaAnalyzer:
             else:
                 # Default Maven command to run all tests
                 print("Running all tests...")
-                maven_command = ['C:\\Users\\victo\\Desktop\\DTU\Autumn_24\\Program Analysis\\Project_Git\\apache-maven-3.9.9\\bin\\mvn.cmd','test']
+                maven_command = [self.maven_path,'test']
 
                 # Run the Maven command and capture output
                 self.run_maven_command(maven_command)
