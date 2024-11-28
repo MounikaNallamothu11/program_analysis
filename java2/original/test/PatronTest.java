@@ -1,3 +1,6 @@
+import main.Book;
+import main.Library;
+import main.Patron;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,7 +44,7 @@ public class PatronTest {
         library.addBook(book);
         Patron patron = new Patron("John Doe");
 
-        patron.returnBook(book); // Book is not borrowed yet
+        patron.returnBook(book); // main.Book is not borrowed yet
         assertFalse(book.isCheckedOut());
     }
 }

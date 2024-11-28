@@ -113,7 +113,7 @@ class DynamicJavaAnalyzer:
 
                     test_cases = "+".join(sorted(set(tests)))
 
-                    maven_command = [self.maven_path, 'test', f'-Dtest={class_name}#{test_cases}']
+                    maven_command = [self.maven_path, 'test', f'-Dtest={class_name}#{test_cases}','-Dmaven.test.failure.ignore=true']
 
                     # Run the Maven command and capture output
                     return self.run_maven_command(maven_command)
@@ -121,7 +121,7 @@ class DynamicJavaAnalyzer:
             else:
                 # Default Maven command to run all tests
                 print("Running all tests...")
-                maven_command = [self.maven_path,'test']
+                maven_command = [self.maven_path,'test','-Dmaven.test.failure.ignore=true']
 
                 # Run the Maven command and capture output
                 return self.run_maven_command(maven_command)
@@ -325,165 +325,162 @@ class DynamicJavaAnalyzer:
         return full_name.split('.')[-1]
 
     def analyze(self):
-        try: 
-            # Collect Java files from both src and test directories
-            all_java_files = self.get_java_files(self.src_path)
-            all_java_files.update(self.get_java_files(self.test_path))  # Merge dictionaries
+        # Collect Java files from both src and test directories
+        all_java_files = self.get_java_files(self.src_path)
+        all_java_files.update(self.get_java_files(self.test_path))  # Merge dictionaries
 
-            # Backup original files
-            self.backup_and_restore(all_java_files, backup=True)
+        # Backup original files
+        self.backup_and_restore(all_java_files, backup=True)
 
-            # print(f"Current working directory: {os.getcwd()}")
-            original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"
+        # print(f"Current working directory: {os.getcwd()}")
+        original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"
 
-            # Check if existing mapping is present
-            # print(original_json_mapping_path)
-            if os.path.exists(original_json_mapping_path):
-                print("Existing mapping found. Loading the mapping...")
-                existing_mapping = self.load_existing_mapping()
-                method_calls = {}
+        # Check if existing mapping is present
+        # print(original_json_mapping_path)
+        if os.path.exists(original_json_mapping_path):
+            print("Existing mapping found. Loading the mapping...")
+            existing_mapping = self.load_existing_mapping()
+            method_calls = {}
 
-                if self.static_analysis_results:
-                    print(f"Static analysis results found: {self.static_analysis_results}")
-                    # Segregate affected methods and tests
-                    modified_methods = self.static_analysis_results.get("all_possible_affected_methods", set())
-                    removed_methods = self.static_analysis_results.get("removed_methods", set())
-                    added_methods = self.static_analysis_results.get("added_methods", set())
-                    added_tests = self.static_analysis_results.get("added_tests", set())
-                    modified_tests = self.static_analysis_results.get("modified_tests", set())
-                    removed_tests = self.static_analysis_results.get("removed_tests", set())
+            if self.static_analysis_results:
+                print(f"Static analysis results found: {self.static_analysis_results}")
+                # Segregate affected methods and tests
+                modified_methods = self.static_analysis_results.get("all_possible_affected_methods", set())
+                removed_methods = self.static_analysis_results.get("removed_methods", set())
+                added_methods = self.static_analysis_results.get("added_methods", set())
+                added_tests = self.static_analysis_results.get("added_tests", set())
+                modified_tests = self.static_analysis_results.get("modified_tests", set())
+                removed_tests = self.static_analysis_results.get("removed_tests", set())
 
-                    # Remove entries of removed methods
-                    for removed_method in removed_methods:
-                        if removed_method in existing_mapping:
-                            del existing_mapping[removed_method]
+                # Remove entries of removed methods
+                for removed_method in removed_methods:
+                    if removed_method in existing_mapping:
+                        del existing_mapping[removed_method]
 
-                    # Remove entries of removed tests
-                    for test in removed_tests:
-                        for method in list(existing_mapping.keys()):
-                            if test in existing_mapping[method]:
-                                existing_mapping[method].remove(test)
-                            if not existing_mapping[method]:  # Remove method if no tests remain
+                # Remove entries of removed tests
+                for test in removed_tests:
+                    for method in list(existing_mapping.keys()):
+                        if test in existing_mapping[method]:
+                            existing_mapping[method].remove(test)
+                        if not existing_mapping[method]:  # Remove method if no tests remain
+                            del existing_mapping[method]
+
+                # Save updated mapping to JSON
+                with open(original_json_mapping_path, "w") as json_file:
+                    json.dump(existing_mapping, json_file, indent=4)
+
+                # Run new and modified tests
+                tests_to_run = added_tests.union(modified_tests)
+                if tests_to_run:
+                    for full_path in all_java_files.values():
+                        self.insert_logging_statements([full_path])
+
+                    output = self.compile_and_run_tests(list(tests_to_run))
+                    if output is None:
+                        print("Error occurred while running new/modified tests.")
+                        self.cleanup()
+                        return
+
+                    class_names = self.extract_class_names(all_java_files)
+                    method_calls = self.parse_output(output,class_names)
+                    self.cleanup()
+                    self.save_results_to_json(method_calls)
+
+                # Check for affected methods and run relevant tests
+                affected_methods = added_methods.union(modified_methods)
+                affected_methods_testMethods_Mapping = {}
+
+                for method, test_methods in existing_mapping.items():
+                    if method in affected_methods:
+                        affected_methods_testMethods_Mapping [method] = test_methods
+
+
+                if affected_methods_testMethods_Mapping :
+                    test_methods_to_run = list({test for tests in affected_methods_testMethods_Mapping .values() for test in tests})
+                    #self.compile_and_run_tests(test_methods_to_run)
+                    for full_path in all_java_files.values():
+                        self.insert_logging_statements([full_path])
+
+                    output = self.compile_and_run_tests(list(test_methods_to_run))
+                    if output is None:
+                        print("Error occurred while running new/modified tests.")
+                        self.cleanup()
+                        return
+
+                    class_names = self.extract_class_names(all_java_files)
+                    method_calls = self.parse_output(output,class_names)
+                    self.cleanup()
+
+
+                    temp_mapping = {}
+                    for test_method, calls in method_calls.items():
+                        for call in calls:
+                            if call not in temp_mapping:
+                                temp_mapping[call] = []
+                            temp_mapping[call].append(test_method)
+
+                    #compare both temp and existing mapping and if any new item found from temp mapping,
+                    #Take that to existing mapping
+                    for method, new_tests in temp_mapping.items():
+                        if method not in existing_mapping:
+                            # Add the method with its test methods if not already in existing mapping
+                            existing_mapping[method] = new_tests
+                        else:
+                            # Add only the new test methods to the existing mapping
+                            existing_mapping[method] = list(set(existing_mapping[method] + new_tests))
+
+
+                    # Update the existing mapping based on the temp mapping
+                    for test_case, methods_in_temp in method_calls.items():
+                        # Iterate through the existing mapping and update it
+                        for method, associated_tests in list(existing_mapping.items()):
+                            # If the current test case is associated with the method
+                            if test_case in associated_tests:
+                                # Remove the method if it's not in the temp mapping
+                                if method not in methods_in_temp:
+                                    associated_tests.remove(test_case)
+                            # If no test cases are associated with the method, remove the method
+                            if not associated_tests:
                                 del existing_mapping[method]
 
-                    # Save updated mapping to JSON
+                    # Save the updated mapping to the JSON file
                     with open(original_json_mapping_path, "w") as json_file:
                         json.dump(existing_mapping, json_file, indent=4)
 
-                    # Run new and modified tests
-                    tests_to_run = added_tests.union(modified_tests)
-                    if tests_to_run:
-                        for full_path in all_java_files.values():
-                            self.insert_logging_statements([full_path])
-
-                        output = self.compile_and_run_tests(list(tests_to_run))
-                        if output is None:
-                            print("Error occurred while running new/modified tests.")
-                            self.cleanup()
-                            return
-
-                        class_names = self.extract_class_names(all_java_files)
-                        method_calls = self.parse_output(output,class_names)
-                        self.cleanup()
-                        self.save_results_to_json(method_calls)
-
-                    # Check for affected methods and run relevant tests
-                    affected_methods = added_methods.union(modified_methods)
-                    affected_methods_testMethods_Mapping = {}
-
-                    for method, test_methods in existing_mapping.items():
-                        if method in affected_methods:
-                            affected_methods_testMethods_Mapping [method] = test_methods
-
-
-                    if affected_methods_testMethods_Mapping :
-                        test_methods_to_run = list({test for tests in affected_methods_testMethods_Mapping .values() for test in tests})
-                        #self.compile_and_run_tests(test_methods_to_run)
-                        for full_path in all_java_files.values():
-                            self.insert_logging_statements([full_path])
-
-                        output = self.compile_and_run_tests(list(test_methods_to_run))
-                        if output is None:
-                            print("Error occurred while running new/modified tests.")
-                            self.cleanup()
-                            return
-
-                        class_names = self.extract_class_names(all_java_files)
-                        method_calls = self.parse_output(output,class_names)
-                        self.cleanup()
-
-
-                        temp_mapping = {}
-                        for test_method, calls in method_calls.items():
-                            for call in calls:
-                                if call not in temp_mapping:
-                                    temp_mapping[call] = []
-                                temp_mapping[call].append(test_method)
-
-                        #compare both temp and existing mapping and if any new item found from temp mapping,
-                        #Take that to existing mapping
-                        for method, new_tests in temp_mapping.items():
-                            if method not in existing_mapping:
-                                # Add the method with its test methods if not already in existing mapping
-                                existing_mapping[method] = new_tests
-                            else:
-                                # Add only the new test methods to the existing mapping
-                                existing_mapping[method] = list(set(existing_mapping[method] + new_tests))
-
-
-                        # Update the existing mapping based on the temp mapping
-                        for test_case, methods_in_temp in method_calls.items():
-                            # Iterate through the existing mapping and update it
-                            for method, associated_tests in list(existing_mapping.items()):
-                                # If the current test case is associated with the method
-                                if test_case in associated_tests:
-                                    # Remove the method if it's not in the temp mapping
-                                    if method not in methods_in_temp:
-                                        associated_tests.remove(test_case)
-                                # If no test cases are associated with the method, remove the method
-                                if not associated_tests:
-                                    del existing_mapping[method]
-
-                        # Save the updated mapping to the JSON file
-                        with open(original_json_mapping_path, "w") as json_file:
-                            json.dump(existing_mapping, json_file, indent=4)
-
-                print(f"The affected test cases are: {self.test_answers}")
-                print("Analysis complete.")
-                self.cleanup()
-                return
-
-            else:
-                # If no existing mapping, create a new one
-                print("No existing mapping found. Creating a new one...")
-                method_calls = {}
-
-                # Insert logging into all Java files
-                # print("Inserting logging statements into all relevant Java files...")
-                for full_path in all_java_files.values():
-                    self.insert_logging_statements([full_path])
-
-                # print("Compiling and running all Java files...")
-                output = self.compile_and_run_tests()
-                if output is None:
-                    self.cleanup()
-                    return
-
-                class_names = self.extract_class_names(all_java_files)
-
-                # print("Parsing output to determine method calls...")
-                method_calls = self.parse_output(output, class_names)
-
-                self.cleanup()
-
-
-                self.save_results_to_json(method_calls)
-
-                print("Analysis complete.")
-
-                return
-        finally:
+            print(f"The affected test cases are: {self.test_answers}")
+            print("Analysis complete.")
             self.cleanup()
+            return
+
+        else:
+            # If no existing mapping, create a new one
+            print("No existing mapping found. Creating a new one...")
+            method_calls = {}
+
+            # Insert logging into all Java files
+            # print("Inserting logging statements into all relevant Java files...")
+            for full_path in all_java_files.values():
+                self.insert_logging_statements([full_path])
+
+            # print("Compiling and running all Java files...")
+            output = self.compile_and_run_tests()
+            if output is None:
+                self.cleanup()
+                return
+
+            class_names = self.extract_class_names(all_java_files)
+
+            # print("Parsing output to determine method calls...")
+            method_calls = self.parse_output(output, class_names)
+
+            self.cleanup()
+
+
+            self.save_results_to_json(method_calls)
+
+            print("Analysis complete.")
+
+            return
 
 
 

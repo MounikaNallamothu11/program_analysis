@@ -1,34 +1,138 @@
 {
-    "BankAccount.add": [
-        "BankAccountTest.testTransferSuccess",
-        "BankAccountTest.testGetAccountSummary",
-        "BankAccountTest.testDeposit"
+    "Book.getAuthor": [
+        "BookTest.testBookCreation",
+        "LibraryTest.testAddBookToLibrary",
+        "PatronTest.testBookCreation"
     ],
-    "BankAccount.transfer": [
-        "BankAccountTest.testTransferSuccess",
-        "BankAccountTest.testTransferInsufficientFunds"
+    "Book.getTitle": [
+        "BookTest.testBookCreation",
+        "LibraryTest.testFindBookByTitleNotFound",
+        "LibraryTest.testAddBookToLibrary",
+        "PatronTest.testReturnBookNotBorrowed",
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
     ],
-    "BankAccount.getBalance": [
-        "BankAccountTest.testTransferSuccess",
-        "BankAccountTest.testSumPositiveBalances",
-        "BankAccountTest.testDeposit"
+    "Book.checkOut": [
+        "BookTest.testCheckOutAndReturn",
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
     ],
-    "BankAccount.withdraw": [
-        "BankAccountTest.testTransferSuccess",
-        "BankAccountTest.testGetAccountSummary"
+    "Book.returnBook": [
+        "BookTest.testCheckOutAndReturn",
+        "PatronTest.testReturnBook"
     ],
-    "BankAccount.deposit": [
-        "BankAccountTest.testTransferSuccess",
-        "BankAccountTest.testGetAccountSummary",
-        "BankAccountTest.testDeposit"
+    "Book.isCheckedOut": [
+        "BookTest.testCheckOutAndReturn",
+        "PatronTest.testReturnBookNotBorrowed",
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
     ],
-    "BankAccount.sumPositiveBalances": [
-        "BankAccountTest.testSumPositiveBalances"
+    "OrderProcessingSystem.generateInvoice": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice"
     ],
-    "BankAccount.getAccountSummary": [
-        "BankAccountTest.testGetAccountSummary"
+    "OrderProcessingSystem.calculateShippingCost": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice"
     ],
-    "BankAccount.calculateInterest": [
-        "BankAccountTest.testCalculateInterestDivideByZero"
+    "OrderProcessingSystem.calculateSubtotal": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateSubtotal",
+        "OrderProcessingSystemTest.testCalculateDiscount"
+    ],
+    "OrderProcessingSystem.calculateTax": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice"
+    ],
+    "Product.getQuantity": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateSubtotal",
+        "OrderProcessingSystemTest.testCalculateDiscount",
+        "ProductTest.testProductCreation"
+    ],
+    "Invoice.getDiscount": [
+        "InvoiceTest.testInvoiceCalculation"
+    ],
+    "OrderProcessingSystem.addProductToOrder": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateSubtotal",
+        "OrderProcessingSystemTest.testCalculateDiscount"
+    ],
+    "Invoice.getTax": [
+        "InvoiceTest.testInvoiceCalculation"
+    ],
+    "OrderProcessingSystem.calculateDiscount": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateDiscount"
+    ],
+    "Invoice.getShippingCost": [
+        "InvoiceTest.testInvoiceCalculation"
+    ],
+    "Product.getPrice": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateSubtotal",
+        "OrderProcessingSystemTest.testCalculateDiscount",
+        "ProductTest.testProductCreation"
+    ],
+    "Invoice.getTotalAmount": [
+        "InvoiceTest.testInvoiceCalculation"
+    ],
+    "OrderProcessingSystem.if": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateDiscount"
+    ],
+    "Invoice.getSubtotal": [
+        "InvoiceTest.testInvoiceCalculation"
+    ],
+    "Library.addBook": [
+        "LibraryTest.testFindBookByTitleNotFound",
+        "LibraryTest.testAddBookToLibrary",
+        "PatronTest.testReturnBookNotBorrowed",
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
+    ],
+    "Library.findBookByTitle": [
+        "LibraryTest.testFindBookByTitleNotFound",
+        "LibraryTest.testAddBookToLibrary"
+    ],
+    "Patron.returnBook": [
+        "PatronTest.testReturnBookNotBorrowed",
+        "PatronTest.testReturnBook"
+    ],
+    "Patron.getName": [
+        "PatronTest.testPatronCreation"
+    ],
+    "Patron.borrowBook": [
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
+    ],
+    "Product.getName": [
+        "ProductTest.testProductCreation"
+    ],
+    "Transaction.process": [
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
     ]
 }

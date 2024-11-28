@@ -1,3 +1,7 @@
+import main.Book;
+import main.Library;
+import main.Patron;
+import main.Transaction;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -5,6 +9,10 @@ public class TransactionTest {
 
     @Test
     public void testProcessCheckoutTransaction() {
+System.out.println("CALL TransactionTest.testProcessCheckoutTransaction");
+System.out.println("CALL TransactionTest.testProcessCheckoutTransaction");
+System.out.println("CALL TransactionTest.testProcessCheckoutTransaction");
+System.out.println("CALL TransactionTest.testProcessCheckoutTransaction");
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
         library.addBook(book);
@@ -19,6 +27,10 @@ public class TransactionTest {
 
     @Test
     public void testProcessReturnTransaction() {
+System.out.println("CALL TransactionTest.testProcessReturnTransaction");
+System.out.println("CALL TransactionTest.testProcessReturnTransaction");
+System.out.println("CALL TransactionTest.testProcessReturnTransaction");
+System.out.println("CALL TransactionTest.testProcessReturnTransaction");
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
         library.addBook(book);
@@ -34,6 +46,10 @@ public class TransactionTest {
 
     @Test
     public void testProcessTransactionNotAllowed() {
+System.out.println("CALL TransactionTest.testProcessTransactionNotAllowed");
+System.out.println("CALL TransactionTest.testProcessTransactionNotAllowed");
+System.out.println("CALL TransactionTest.testProcessTransactionNotAllowed");
+System.out.println("CALL TransactionTest.testProcessTransactionNotAllowed");
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
         library.addBook(book);

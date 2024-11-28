@@ -1,3 +1,6 @@
+import main.Invoice;
+import main.OrderProcessingSystem;
+import main.Product;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,7 +9,7 @@ public class InvoiceTest {
     @Test
     public void testInvoiceCalculation() {
         OrderProcessingSystem orderSystem = new OrderProcessingSystem();
-        orderSystem.addProductToOrder(new Product("Book A", 3, 60.0)); // $180
+        orderSystem.addProductToOrder(new Product("main.Book A", 3, 60.0)); // $180
         Invoice invoice = orderSystem.generateInvoice();
         
         assertEquals(180.0, invoice.getSubtotal(), "Subtotal is incorrect");
