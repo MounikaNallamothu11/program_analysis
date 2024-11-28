@@ -1,6 +1,5 @@
 import os
 import tempfile
-import json
 from static_analysis.change_detector import ChangeDetector
 from static_analysis.dependency_tracker import DependencyTracker
 from dynamic_analysis.DynamicJavaAnalyzer import DynamicJavaAnalyzer
