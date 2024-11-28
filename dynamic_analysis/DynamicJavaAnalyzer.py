@@ -109,9 +109,16 @@ class DynamicJavaAnalyzer:
                     self.test_answers.extend(test_methods)
                     self.test_answers = list(dict.fromkeys(self.test_answers))
                     combined_tests = "+".join(sorted(set(test_methods)))
-                    print(f"Running required tests: {combined_tests}")
+                    print(f"\nRunning required tests: {combined_tests}\n")
 
                     test_cases = "+".join(sorted(set(tests)))
+                    print(f"\nRunning test cases: {test_cases}\n")
+
+                    # mvn test -Dtest=CLASS_NAME1#METHOD_NAME1,CLASS_NAME2#METHOD_NAME2
+
+                    # tough: mvn cmd -Dtest=class1#method1+method2  ,  class2#method3+method4 , ..
+ 
+                    # easy: mvn cmd -Dtest= class1#method1 , class1#method2 , class2#method3, class2#method4 , ...
 
                     maven_command = [self.maven_path, 'test', f'-Dtest={class_name}#{test_cases}','-Dmaven.test.failure.ignore=true']
 

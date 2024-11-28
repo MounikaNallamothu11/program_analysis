@@ -1,5 +1,3 @@
-package main;
-
 public class Invoice {
     private double subtotal;
     private double discount;
@@ -17,7 +15,7 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "main.Invoice:\n" +
+        return "Invoice:\n" +
                "Subtotal: $" + subtotal + "\n" +
                "Discount: -$" + discount + "\n" +
                "Tax: $" + tax + "\n" +

@@ -1,5 +1,3 @@
-package main;
-
 public class Transaction {
     private Patron patron;
     private Book book;
