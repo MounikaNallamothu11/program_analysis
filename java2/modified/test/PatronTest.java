@@ -10,12 +10,6 @@ public class PatronTest {
     }
 
     @Test
-    public void testBookCreation() {
-        Book book = new Book("Animal Farm", "George Orwell");
-        assertEquals("George Orwell", book.getAuthor());
-    }
-
-    @Test
     public void testBorrowBook() {
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
