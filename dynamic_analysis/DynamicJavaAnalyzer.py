@@ -210,9 +210,6 @@ class DynamicJavaAnalyzer:
                     method_name = line.split("CALL ")[1]
 
                     # Ensure we do not add the class name as a method
-                    print(self.extract_method_name(method_name))
-                    print(class_names.values())
-                    print(current_test_method)
                     if self.extract_method_name(method_name) not in class_names.values() and current_test_method:
                         method_calls[current_test_method].add(method_name)  # Use set to avoid duplicates
 
@@ -372,7 +369,6 @@ class DynamicJavaAnalyzer:
                     method_calls = self.parse_output(output,class_names)
                     self.cleanup()
 
-                    print(f"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&{method_calls}")
 
                     temp_mapping = {}
                     for test_method, calls in method_calls.items():
@@ -390,21 +386,6 @@ class DynamicJavaAnalyzer:
                         else:
                             # Add only the new test methods to the existing mapping
                             existing_mapping[method] = list(set(existing_mapping[method] + new_tests))
-
-                    # print(existing_mapping)
-                    # print("#########")
-                    # print(temp_mapping)
-                    # print("@@@@@@@@@@@@@@@@")
-                    # for key,value in method_calls:
-                    #     if key in existing_mapping.items():
-
-
-                    #     if existing_mapping[key] not in temp_mapping.items():
-                    #         print(existing_mapping[key])
-                    #         print(test_methods_to_run)
-                    #         print(temp_mapping.items())
-                    #         print(f"&&&&&&&&&&&&&&&&&&&&&&&&&&&{key}")
-                    #         del existing_mapping[key]
 
 
                     # Update the existing mapping based on the temp mapping
