@@ -2,10 +2,6 @@ import main.*;
 
 public class Main {
     public static void main(String[] args) {
-System.out.println("CALL Main.main");
-System.out.println("CALL Main.main");
-System.out.println("CALL Main.main");
-System.out.println("CALL Main.main");
         // Create an instance of the library
         Library library = new Library();
         Book book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald");

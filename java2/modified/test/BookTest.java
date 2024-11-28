@@ -6,8 +6,6 @@ public class BookTest {
 
     @Test
     public void testBookCreation() {
-System.out.println("CALL BookTest.testBookCreation");
-System.out.println("CALL BookTest.testBookCreation");
         Book book = new Book("1984", "George Orwell");
         assertEquals("1984", book.getTitle());
         assertEquals("George Orwell", book.getAuthor());
@@ -15,8 +13,6 @@ System.out.println("CALL BookTest.testBookCreation");
 
     @Test
     public void testCheckOutAndReturn() {
-System.out.println("CALL BookTest.testCheckOutAndReturn");
-System.out.println("CALL BookTest.testCheckOutAndReturn");
         Book book = new Book("1984", "George Orwell");
         assertFalse(book.isCheckedOut());
         book.checkOut();

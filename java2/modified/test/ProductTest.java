@@ -6,15 +6,11 @@ public class ProductTest {
 
     @Test
     public void testProductCreation() {
-System.out.println("CALL ProductTest.testProductCreation");
-System.out.println("CALL ProductTest.testProductCreation");
-System.out.println("CALL ProductTest.testProductCreation");
-System.out.println("CALL ProductTest.testProductCreation");
         Product product = new Product("main.Book A", 2, 15.0);
         assertEquals("main.Book A", product.getName());
         assertEquals(2, product.getQuantity());
         assertEquals(15.0, product.getPrice());
-        
+
         System.out.println("Running test");
     }
 }

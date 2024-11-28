@@ -8,8 +8,6 @@ public class OrderProcessingSystemTest {
 
     @Test
     public void testCalculateSubtotal() {
-System.out.println("CALL OrderProcessingSystemTest.testCalculateSubtotal");
-System.out.println("CALL OrderProcessingSystemTest.testCalculateSubtotal");
         OrderProcessingSystem orderSystem = new OrderProcessingSystem();
         orderSystem.addProductToOrder(new Product("main.Book A", 2, 10.0));
         orderSystem.addProductToOrder(new Product("main.Book B", 1, 20.0));
@@ -18,8 +16,6 @@ System.out.println("CALL OrderProcessingSystemTest.testCalculateSubtotal");
 
     @Test
     public void testCalculateDiscount() {
-System.out.println("CALL OrderProcessingSystemTest.testCalculateDiscount");
-System.out.println("CALL OrderProcessingSystemTest.testCalculateDiscount");
         OrderProcessingSystem orderSystem = new OrderProcessingSystem();
         orderSystem.addProductToOrder(new Product("main.Book A", 3, 60.0)); // $180
         assertEquals(18.0, orderSystem.calculateDiscount()); // 10% discount
@@ -27,10 +23,6 @@ System.out.println("CALL OrderProcessingSystemTest.testCalculateDiscount");
 
     @Test
     public void testGenerateInvoice() {
-System.out.println("CALL OrderProcessingSystemTest.testGenerateInvoice");
-System.out.println("CALL OrderProcessingSystemTest.testGenerateInvoice");
-        System.out.println("CALL OrderProcessingSystemTest.testGenerateInvoice");
-        System.out.println("CALL OrderProcessingSystemTest.testGenerateInvoice");
         OrderProcessingSystem orderSystem = new OrderProcessingSystem();
         orderSystem.addProductToOrder(new Product("main.Book A", 3, 60.0)); // $180
         Invoice invoice = orderSystem.generateInvoice();

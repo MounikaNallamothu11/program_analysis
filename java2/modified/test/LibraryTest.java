@@ -7,8 +7,6 @@ public class LibraryTest {
 
     @Test
     public void testAddBookToLibrary() {
-System.out.println("CALL LibraryTest.testAddBookToLibrary");
-System.out.println("CALL LibraryTest.testAddBookToLibrary");
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
         library.addBook(book);
@@ -19,8 +17,6 @@ System.out.println("CALL LibraryTest.testAddBookToLibrary");
 
     @Test
     public void testFindBookByTitleNotFound() {
-System.out.println("CALL LibraryTest.testFindBookByTitleNotFound");
-System.out.println("CALL LibraryTest.testFindBookByTitleNotFound");
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
         library.addBook(book);

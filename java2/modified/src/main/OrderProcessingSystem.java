@@ -12,26 +12,14 @@ public class OrderProcessingSystem {
     private List<Product> productsInOrder;
 
     public OrderProcessingSystem() {
-System.out.println("CALL OrderProcessingSystem.OrderProcessingSystem");
-System.out.println("CALL OrderProcessingSystem.OrderProcessingSystem");
-System.out.println("CALL OrderProcessingSystem.OrderProcessingSystem");
-System.out.println("CALL OrderProcessingSystem.OrderProcessingSystem");
         this.productsInOrder = new ArrayList<>();
     }
 
     public void addProductToOrder(Product product) {
-System.out.println("CALL OrderProcessingSystem.addProductToOrder");
-System.out.println("CALL OrderProcessingSystem.addProductToOrder");
-System.out.println("CALL OrderProcessingSystem.addProductToOrder");
-System.out.println("CALL OrderProcessingSystem.addProductToOrder");
         productsInOrder.add(product);
     }
 
     public double calculateSubtotal() {
-System.out.println("CALL OrderProcessingSystem.calculateSubtotal");
-System.out.println("CALL OrderProcessingSystem.calculateSubtotal");
-System.out.println("CALL OrderProcessingSystem.calculateSubtotal");
-System.out.println("CALL OrderProcessingSystem.calculateSubtotal");
         double subtotal = 0.0;
         for (Product product : productsInOrder) {
             double price = product.getPrice();
@@ -41,20 +29,12 @@ System.out.println("CALL OrderProcessingSystem.calculateSubtotal");
     }
 
     public double calculateDiscount() {
-System.out.println("CALL OrderProcessingSystem.calculateDiscount");
-System.out.println("CALL OrderProcessingSystem.calculateDiscount");
-System.out.println("CALL OrderProcessingSystem.calculateDiscount");
-System.out.println("CALL OrderProcessingSystem.calculateDiscount");
         double subtotal = calculateSubtotal();
         double discount = 0.0;
 
         if (subtotal > 200.0) {
             discount = 0.15; // 15% discount for orders above $200
         } else if (subtotal > 100.0) {
-System.out.println("CALL OrderProcessingSystem.if");
-System.out.println("CALL OrderProcessingSystem.if");
-System.out.println("CALL OrderProcessingSystem.if");
-System.out.println("CALL OrderProcessingSystem.if");
             discount = 0.10; // 10% discount for orders above $100
         }
 
@@ -62,10 +42,6 @@ System.out.println("CALL OrderProcessingSystem.if");
     }
 
     public double calculateTax() {
-System.out.println("CALL OrderProcessingSystem.calculateTax");
-System.out.println("CALL OrderProcessingSystem.calculateTax");
-System.out.println("CALL OrderProcessingSystem.calculateTax");
-System.out.println("CALL OrderProcessingSystem.calculateTax");
         double subtotal = calculateSubtotal();
         double discount = calculateDiscount();
         double subtotalAfterDiscount = subtotal - discount;
@@ -73,10 +49,6 @@ System.out.println("CALL OrderProcessingSystem.calculateTax");
     }
 
     public double calculateShippingCost() {
-System.out.println("CALL OrderProcessingSystem.calculateShippingCost");
-System.out.println("CALL OrderProcessingSystem.calculateShippingCost");
-System.out.println("CALL OrderProcessingSystem.calculateShippingCost");
-System.out.println("CALL OrderProcessingSystem.calculateShippingCost");
         double subtotal = 500 + calculateSubtotal();
         if (subtotal >= FREE_SHIPPING_THRESHOLD) {
             return 0.0; // Free shipping if order exceeds $100
@@ -85,10 +57,6 @@ System.out.println("CALL OrderProcessingSystem.calculateShippingCost");
     }
 
     public Invoice generateInvoice() {
-System.out.println("CALL OrderProcessingSystem.generateInvoice");
-System.out.println("CALL OrderProcessingSystem.generateInvoice");
-System.out.println("CALL OrderProcessingSystem.generateInvoice");
-System.out.println("CALL OrderProcessingSystem.generateInvoice");
         double subtotal = calculateSubtotal();
         double discount = calculateDiscount();
         double tax = calculateTax();

@@ -8,30 +8,18 @@ public class PatronTest {
 
     @Test
     public void testPatronCreation() {
-System.out.println("CALL PatronTest.testPatronCreation");
-System.out.println("CALL PatronTest.testPatronCreation");
-System.out.println("CALL PatronTest.testPatronCreation");
-System.out.println("CALL PatronTest.testPatronCreation");
         Patron patron = new Patron("John Doe");
         assertEquals("John Doe", patron.getName());
     }
 
     @Test
     public void testBookCreation() {
-System.out.println("CALL PatronTest.testBookCreation");
-System.out.println("CALL PatronTest.testBookCreation");
-System.out.println("CALL PatronTest.testBookCreation");
-System.out.println("CALL PatronTest.testBookCreation");
         Book book = new Book("Animal Farm", "George Orwell");
         assertEquals("George Orwell", book.getAuthor());
     }
 
     @Test
     public void testBorrowBook() {
-System.out.println("CALL PatronTest.testBorrowBook");
-System.out.println("CALL PatronTest.testBorrowBook");
-System.out.println("CALL PatronTest.testBorrowBook");
-System.out.println("CALL PatronTest.testBorrowBook");
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
         library.addBook(book);
@@ -44,10 +32,6 @@ System.out.println("CALL PatronTest.testBorrowBook");
 
     @Test
     public void testReturnBook() {
-System.out.println("CALL PatronTest.testReturnBook");
-System.out.println("CALL PatronTest.testReturnBook");
-System.out.println("CALL PatronTest.testReturnBook");
-System.out.println("CALL PatronTest.testReturnBook");
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
         library.addBook(book);
@@ -61,10 +45,6 @@ System.out.println("CALL PatronTest.testReturnBook");
 
     @Test
     public void testReturnBookNotBorrowed() {
-System.out.println("CALL PatronTest.testReturnBookNotBorrowed");
-System.out.println("CALL PatronTest.testReturnBookNotBorrowed");
-System.out.println("CALL PatronTest.testReturnBookNotBorrowed");
-System.out.println("CALL PatronTest.testReturnBookNotBorrowed");
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
         library.addBook(book);

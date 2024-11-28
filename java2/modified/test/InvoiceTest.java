@@ -8,8 +8,6 @@ public class InvoiceTest {
 
     @Test
     public void testInvoiceCalculation() {
-System.out.println("CALL InvoiceTest.testInvoiceCalculation");
-System.out.println("CALL InvoiceTest.testInvoiceCalculation");
         OrderProcessingSystem orderSystem = new OrderProcessingSystem();
         orderSystem.addProductToOrder(new Product("main.Book A", 3, 60.0)); // $180
         Invoice invoice = orderSystem.generateInvoice();
