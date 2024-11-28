@@ -8,11 +8,6 @@ public class BankAccountTest {
 
     @Test
     public void testDeposit() {
-        System.out.println("CALL BankAccountTest.testDeposit");
-        System.out.println("CALL BankAccountTest.testDeposit");
-        System.out.println("CALL BankAccountTest.testDeposit");
-        System.out.println("CALL BankAccountTest.testDeposit");
-        System.out.println("CALL BankAccountTest.testDeposit");
         BankAccount account = new BankAccount(1, 100);
         account.deposit(50);
         assertEquals(150, account.getBalance());
@@ -20,11 +15,6 @@ public class BankAccountTest {
 
     @Test
     public void testTransferSuccess() {
-        System.out.println("CALL BankAccountTest.testTransferSuccess");
-        System.out.println("CALL BankAccountTest.testTransferSuccess");
-        System.out.println("CALL BankAccountTest.testTransferSuccess");
-        System.out.println("CALL BankAccountTest.testTransferSuccess");
-        System.out.println("CALL BankAccountTest.testTransferSuccess");
         BankAccount sourceAccount = new BankAccount(1, 100);
         BankAccount destinationAccount = new BankAccount(2, 50);
         String result = sourceAccount.transfer(50, destinationAccount);
@@ -34,11 +24,6 @@ public class BankAccountTest {
 
     @Test
     public void testTransferInsufficientFunds() {
-        System.out.println("CALL BankAccountTest.testTransferInsufficientFunds");
-        System.out.println("CALL BankAccountTest.testTransferInsufficientFunds");
-        System.out.println("CALL BankAccountTest.testTransferInsufficientFunds");
-        System.out.println("CALL BankAccountTest.testTransferInsufficientFunds");
-        System.out.println("CALL BankAccountTest.testTransferInsufficientFunds");
         BankAccount sourceAccount = new BankAccount(1, 100);
         BankAccount destinationAccount = new BankAccount(2, 50);
         String result = sourceAccount.transfer(150, destinationAccount);
@@ -48,22 +33,12 @@ public class BankAccountTest {
 
     @Test
     public void testCalculateInterestDivideByZero() {
-        System.out.println("CALL BankAccountTest.testCalculateInterestDivideByZero");
-        System.out.println("CALL BankAccountTest.testCalculateInterestDivideByZero");
-        System.out.println("CALL BankAccountTest.testCalculateInterestDivideByZero");
-        System.out.println("CALL BankAccountTest.testCalculateInterestDivideByZero");
-        System.out.println("CALL BankAccountTest.testCalculateInterestDivideByZero");
         BankAccount account = new BankAccount(1, 100);
         assertThrows(ArithmeticException.class, () -> account.calculateInterest(0));
     }
 
     @Test
     public void testSumPositiveBalances() {
-        System.out.println("CALL BankAccountTest.testSumPositiveBalances");
-        System.out.println("CALL BankAccountTest.testSumPositiveBalances");
-        System.out.println("CALL BankAccountTest.testSumPositiveBalances");
-        System.out.println("CALL BankAccountTest.testSumPositiveBalances");
-        System.out.println("CALL BankAccountTest.testSumPositiveBalances");
         List<BankAccount> accounts = new ArrayList<>();
         accounts.add(new BankAccount(1, 100)); // Positive balance
         accounts.add(new BankAccount(2, -50)); // Negative balance

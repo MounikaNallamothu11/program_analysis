@@ -6,6 +6,8 @@ import json
 import subprocess
 from utils import find_path_to_folder
 from collections import defaultdict
+import platform
+import subprocess
 
 
 class DynamicJavaAnalyzer:
@@ -106,29 +108,21 @@ class DynamicJavaAnalyzer:
                     self.test_answers = list(dict.fromkeys(self.test_answers))
                     combined_tests = "+".join(sorted(set(test_methods)))
                     print(f"Running required tests: {combined_tests}")
-                    maven_command = ['mvn', 'test', f'-Dtest={class_name}#{','.join(sorted(set(tests)))}']
-                    process = Popen(maven_command,stdout=PIPE, stderr=PIPE, shell=True)
-                    result, stderr = process.communicate()
+
+                    test_cases = ",".join(sorted(set(tests)))
+
+                    maven_command = ['C:\\Users\\victo\\Desktop\\DTU\Autumn_24\\Program Analysis\\Project_Git\\apache-maven-3.9.9\\bin\\mvn.cmd', 'test', f'-Dtest={class_name}#{test_cases}']
+
+                    # Run the Maven command and capture output
+                    self.run_maven_command(maven_command)
+                    
             else:
                 # Default Maven command to run all tests
                 print("Running all tests...")
-                maven_command = ['mvn','test']
+                maven_command = ['C:\\Users\\victo\\Desktop\\DTU\Autumn_24\\Program Analysis\\Project_Git\\apache-maven-3.9.9\\bin\\mvn.cmd','test']
 
                 # Run the Maven command and capture output
-                # result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
-                process = Popen(maven_command,stdout=PIPE, stderr=PIPE, shell=True)
-                result, stderr = process.communicate()
-
-            # Check the result and handle errors
-            if process.returncode != 0:
-                print("Maven build and test failed with errors:")
-                print(result)
-                return None
-
-            # Return the stdout (test results) for further analysis
-
-            print(result.decode())
-            return result.decode()
+                self.run_maven_command(maven_command)
 
         except subprocess.CalledProcessError as e:
             # Handle subprocess errors globally
@@ -138,6 +132,52 @@ class DynamicJavaAnalyzer:
         finally:
             self.cleanup()
             os.chdir(current_directory)
+
+
+    def run_maven_command(self, maven_command):
+        """
+        Runs a Maven command and handles the output and errors based on the OS.
+
+        Args:
+            maven_command (str): The Maven command to execute.
+
+        Returns:
+            str or None: The command output if successful, otherwise None.
+        """
+        # Check the OS type
+        os_type = platform.system().lower()
+
+        try:
+            if os_type == "windows":
+                # Use Popen for Windows with shell=True
+                process = Popen(maven_command, stdout=PIPE, stderr=PIPE, shell=True)
+                stdout, stderr = process.communicate()
+                if process.returncode != 0:
+                    print("Maven build and test failed with errors:")
+                    print(stderr.decode())
+                    return None
+                else:
+                    print(stdout.decode())
+                    return stdout.decode()
+
+            elif os_type == "darwin":  # macOS is identified as "Darwin"
+                # Use subprocess.run for macOS
+                result = subprocess.run(maven_command, text=True, capture_output=True, shell=True, check=False)
+                if result.returncode != 0:
+                    print("Maven build and test failed with errors:")
+                    print(result.stderr)
+                    return None
+                else:
+                    print(result.stdout)
+                    return result.stdout
+
+            else:
+                print(f"Unsupported OS: {os_type}")
+                return None
+
+        except Exception as e:
+            print(f"An error occurred while running the Maven command: {e}")
+            return None
 
 
     def extract_class_names(self, java_files):

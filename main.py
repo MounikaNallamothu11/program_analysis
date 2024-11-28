@@ -7,10 +7,10 @@ from dynamic_analysis.DynamicJavaAnalyzer import DynamicJavaAnalyzer
 from utils import find_path_to_folder, select_folder, is_git_repo, extract_previous_commit, save_last_project_path, get_last_project_path, measure_time
 
 # User flags
-TESTING = False
+TESTING = True
 PRINT_AST = False
 SHOW_METHOD_BODIES = False
-USE_LAST_PROJECT_PATH = True
+USE_LAST_PROJECT_PATH = False
 # AUTO_RERUN_AFFECTED_TESTS = True TODO: Implement this flag to automatically rerun affected tests after dynamic analysis
 
 

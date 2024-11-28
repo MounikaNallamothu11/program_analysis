@@ -1,10 +1,5 @@
 public class Main {
     public static void main(String[] args) {
-System.out.println("CALL Main.main");
-System.out.println("CALL Main.main");
-System.out.println("CALL Main.main");
-System.out.println("CALL Main.main");
-System.out.println("CALL Main.main");
         BankAccount account = new BankAccount(123456789, 1000.00);
 
         System.out.println("Account Number: " + account.getAccountNumber());
