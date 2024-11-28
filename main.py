@@ -7,9 +7,11 @@ from utils import find_path_to_folder, select_folder, is_git_repo, extract_previ
 
 # User flags
 TESTING = False
-PRINT_AST = True
+PRINT_AST = False
 SHOW_METHOD_BODIES = False
 USE_LAST_PROJECT_PATH = True
+
+# AUTO_RERUN_AFFECTED_TESTS = True TODO: Implement this flag to automatically rerun affected tests after dynamic analysis
 
 
 def main():
