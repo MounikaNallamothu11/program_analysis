@@ -4,6 +4,8 @@ import re
 import shutil
 import json
 import subprocess
+from collections import defaultdict
+
 
 class DynamicJavaAnalyzer:
     def __init__(self, project_path, static_analysis_results):
@@ -67,7 +69,7 @@ class DynamicJavaAnalyzer:
                 if method_match:
                     method_name = method_match.group(0).split('(')[0].split()[-1]
                     modified_code.append(line)
-                    modified_code.append(f'System.out.println("CALL {method_name}");\n')
+                    modified_code.append(f'System.out.println("CALL {self.get_class_name_from_file(file_path)}.{method_name}");\n')
                     in_method = True
                 elif in_method and '}' in line:
                     modified_code.append(line)
@@ -79,7 +81,7 @@ class DynamicJavaAnalyzer:
                 file.writelines(modified_code)
 
 
-    def compile_and_run_tests(self, test_methods=None):
+    def compile_and_run_tests(self, test_methods=None,):
         """
         Compiles and runs the modified class under test, along with the JUnit test class, using Maven.
         If test_methods is provided, only those tests will be run.
@@ -87,23 +89,34 @@ class DynamicJavaAnalyzer:
         current_directory = os.getcwd()
         os.chdir(self.project_path)
 
+        result = None
+        process = None
+
         try:
             if test_methods:
+                test_groups = defaultdict(list)
+                for test in test_methods:
+                    class_name, test_name = test.split('.')
+                    test_groups[class_name].append(test_name)
+
                 # Construct the Maven command to run specific test methods
-                self.test_answers.extend(test_methods)
-                self.test_answers = list(dict.fromkeys(self.test_answers))
-                combined_tests = "+".join(sorted(set(test_methods)))
-                print(f"Running required tests: {combined_tests}")
-                maven_command = ['mvn', 'test', f'-Dtest=BankAccountTest#{combined_tests}']
+                for class_name, tests in test_groups.items():
+                    self.test_answers.extend(test_methods)
+                    self.test_answers = list(dict.fromkeys(self.test_answers))
+                    combined_tests = "+".join(sorted(set(test_methods)))
+                    print(f"Running required tests: {combined_tests}")
+                    maven_command = ['mvn', 'test', f'-Dtest={class_name}#{','.join(sorted(set(tests)))}']
+                    process = Popen(maven_command,stdout=PIPE, stderr=PIPE, shell=True)
+                    result, stderr = process.communicate()
             else:
                 # Default Maven command to run all tests
                 print("Running all tests...")
                 maven_command = ['mvn','test']
 
-            # Run the Maven command and capture output
-            # result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
-            process = Popen(maven_command,stdout=PIPE, stderr=PIPE, shell=True)
-            result, stderr = process.communicate()
+                # Run the Maven command and capture output
+                # result = subprocess.run(maven_command, text=True, capture_output=True, check=True)
+                process = Popen(maven_command,stdout=PIPE, stderr=PIPE, shell=True)
+                result, stderr = process.communicate()
 
             # Check the result and handle errors
             if process.returncode != 0:
@@ -186,16 +199,21 @@ class DynamicJavaAnalyzer:
 
         for line in output.splitlines():
             # Detect start of a test method based on its name (assuming test methods start with "CALL test")
-            if line.startswith("CALL test"):
-                current_test_method = line.split("CALL ")[1]
-                method_calls[current_test_method] = set()  # Use a set to avoid repeating method names
-            elif line.startswith("CALL"):
-                # If it's a method call, add it to the current test method's list
-                method_name = line.split("CALL ")[1]
+            if line.startswith("CALL"):
+                value = self.extract_method_name(line.split("CALL ")[1])
+                if value.startswith("test"):
+                    current_test_method = line.split("CALL ")[1]
+                    method_calls[current_test_method] = set()  # Use a set to avoid repeating method names
+                else :
+                    # If it's a method call, add it to the current test method's list
+                    method_name = line.split("CALL ")[1]
 
-                # Ensure we do not add the class name as a method
-                if method_name not in class_names.values() and current_test_method:
-                    method_calls[current_test_method].add(method_name)  # Use set to avoid duplicates
+                    # Ensure we do not add the class name as a method
+                    print(self.extract_method_name(method_name))
+                    print(class_names.values())
+                    print(current_test_method)
+                    if self.extract_method_name(method_name) not in class_names.values() and current_test_method:
+                        method_calls[current_test_method].add(method_name)  # Use set to avoid duplicates
 
         # Convert sets back to lists to maintain the expected output format
         method_calls = {test: list(calls) for test, calls in method_calls.items()}
@@ -287,12 +305,12 @@ class DynamicJavaAnalyzer:
             if self.static_analysis_results:
                 print(f"Static analysis results found: {self.static_analysis_results}")
                 # Segregate affected methods and tests
-                modified_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("directly_affected_methods", set())}
-                removed_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("removed_methods", set())}
-                added_methods = {self.extract_method_name(method) for method in self.static_analysis_results.get("added_methods", set())}
-                added_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("added_tests", set())}
-                modified_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("modified_tests", set())}
-                removed_tests = {self.extract_method_name(test) for test in self.static_analysis_results.get("removed_tests", set())}
+                modified_methods = self.static_analysis_results.get("directly_affected_methods", set())
+                removed_methods = self.static_analysis_results.get("removed_methods", set())
+                added_methods = self.static_analysis_results.get("added_methods", set())
+                added_tests = self.static_analysis_results.get("added_tests", set())
+                modified_tests = self.static_analysis_results.get("modified_tests", set())
+                removed_tests = self.static_analysis_results.get("removed_tests", set())
 
                 # Remove entries of removed methods
                 for removed_method in removed_methods:
@@ -353,6 +371,8 @@ class DynamicJavaAnalyzer:
                     method_calls = self.parse_output(output,class_names)
                     self.cleanup()
 
+                    print(f"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&{method_calls}")
+
                     temp_mapping = {}
                     for test_method, calls in method_calls.items():
                         for call in calls:
@@ -369,6 +389,35 @@ class DynamicJavaAnalyzer:
                         else:
                             # Add only the new test methods to the existing mapping
                             existing_mapping[method] = list(set(existing_mapping[method] + new_tests))
+
+                    # print(existing_mapping)
+                    # print("#########")
+                    # print(temp_mapping)
+                    # print("@@@@@@@@@@@@@@@@")
+                    # for key,value in method_calls:
+                    #     if key in existing_mapping.items():
+
+
+                    #     if existing_mapping[key] not in temp_mapping.items():
+                    #         print(existing_mapping[key])
+                    #         print(test_methods_to_run)
+                    #         print(temp_mapping.items())
+                    #         print(f"&&&&&&&&&&&&&&&&&&&&&&&&&&&{key}")
+                    #         del existing_mapping[key]
+
+
+                    # Update the existing mapping based on the temp mapping
+                    for test_case, methods_in_temp in method_calls.items():
+                        # Iterate through the existing mapping and update it
+                        for method, associated_tests in list(existing_mapping.items()):
+                            # If the current test case is associated with the method
+                            if test_case in associated_tests:
+                                # Remove the method if it's not in the temp mapping
+                                if method not in methods_in_temp:
+                                    associated_tests.remove(test_case)
+                            # If no test cases are associated with the method, remove the method
+                            if not associated_tests:
+                                del existing_mapping[method]
 
                     # Save the updated mapping to the JSON file
                     with open(original_json_mapping_path, "w") as json_file:

@@ -9,7 +9,7 @@ from static_analysis.dependency_tracker import DependencyTracker
 from dynamic_analysis.DynamicJavaAnalyzer import DynamicJavaAnalyzer
 
 # User flags
-TESTING = True
+TESTING = False
 SHOW_METHOD_BODIES = False
 PRINT_AST = False
 
