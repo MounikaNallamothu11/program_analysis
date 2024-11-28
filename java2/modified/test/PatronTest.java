@@ -41,7 +41,7 @@ public class PatronTest {
         library.addBook(book);
         Patron patron = new Patron("John Doe");
 
-        patron.returnBook(book); // main.Book is not borrowed yet
+        patron.returnBook(book); // Book is not borrowed yet
         assertFalse(book.isCheckedOut());
     }
 }
