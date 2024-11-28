@@ -99,10 +99,22 @@ def get_last_project_path():
 
 
 def save_last_project_path(path):
-    """Save the project path to the config file."""
+    """Save the last project path to the config file, preserving other fields."""
     try:
+        # Load existing config if the file exists
+        if os.path.exists(CONFIG_FILE):
+            with open(CONFIG_FILE, "r") as f:
+                config = json.load(f)
+        else:
+            config = {}
+
+        # Update the last project path
+        config["last_project_path"] = path
+
+        # Save updated config back to the file
         with open(CONFIG_FILE, "w") as f:
-            json.dump({"last_project_path": path}, f)
+            json.dump(config, f, indent=4)
+
     except Exception as e:
         print(f"Error saving to {CONFIG_FILE}: {e}")
 
