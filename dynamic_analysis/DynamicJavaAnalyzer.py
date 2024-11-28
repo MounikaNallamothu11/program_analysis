@@ -111,7 +111,7 @@ class DynamicJavaAnalyzer:
                     combined_tests = "+".join(sorted(set(test_methods)))
                     print(f"Running required tests: {combined_tests}")
 
-                    test_cases = ",".join(sorted(set(tests)))
+                    test_cases = "+".join(sorted(set(tests)))
 
                     maven_command = [self.maven_path, 'test', f'-Dtest={class_name}#{test_cases}']
 
