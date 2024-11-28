@@ -4,7 +4,7 @@ import re
 import shutil
 import json
 import subprocess
-from main import find_path_to_folder
+from utils import find_path_to_folder
 
 class DynamicJavaAnalyzer:
     def __init__(self, project_path, static_analysis_results):
