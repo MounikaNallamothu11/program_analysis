@@ -277,24 +277,36 @@ class DynamicJavaAnalyzer:
     def cleanup(self):
         """
         Restores the original Java files and deletes their backups.
+        Logs warnings if restoration or deletion fails.
         """
         # Collect all Java files from the src and test directories
         all_java_files = self.get_java_files(self.src_path)
         all_java_files.update(self.get_java_files(self.test_path))  # Merge src and test files
 
-        # print("Restoring original files from backups...")
+        # Restore original files from backups
         for filename, full_path in all_java_files.items():
             backup_path = full_path + ".bak"
-            # print(f"Restoring {filename} from {backup_path}...")
-            self.restore_original_file(full_path, backup_path)
+            if os.path.exists(backup_path):
+                try:
+                    self.restore_original_file(full_path, backup_path)
+                except Exception as e:
+                    print(f"Warning: Failed to restore {filename} from backup {backup_path}. Error: {e}")
+            else:
+                print(f"Warning: Backup not found for {filename} at {backup_path}. Skipping restoration.")
 
-        # print("Deleting backup files...")
+        # Delete backup files
         for filename, full_path in all_java_files.items():
             backup_path = full_path + ".bak"
-            # print(f"Deleting backup for {filename} at {backup_path}...")
-            self.delete_backup(backup_path)
+            if os.path.exists(backup_path):
+                try:
+                    self.delete_backup(backup_path)
+                except Exception as e:
+                    print(f"Warning: Failed to delete backup {backup_path}. Error: {e}")
+            else:
+                print(f"Warning: Backup already deleted or missing for {filename} at {backup_path}.")
 
-        # print("Cleanup completed.")
+        print("Cleanup completed.")
+
 
     def save_results_to_json(self, results):
         # Reverse the mapping: call → test_methods
