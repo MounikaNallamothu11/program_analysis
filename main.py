@@ -1,17 +1,16 @@
 import os
 import tempfile
+import json
 from static_analysis.change_detector import ChangeDetector
 from static_analysis.dependency_tracker import DependencyTracker
 from dynamic_analysis.DynamicJavaAnalyzer import DynamicJavaAnalyzer
-
-from utils import find_path_to_folder, select_folder, is_git_repo, extract_previous_commit
-
+from utils import find_path_to_folder, select_folder, is_git_repo, extract_previous_commit, save_last_project_path, get_last_project_path
 
 # User flags
-TESTING = True
-SHOW_METHOD_BODIES = False
+TESTING = False
 PRINT_AST = True
-
+SHOW_METHOD_BODIES = False
+USE_LAST_PROJECT_PATH = True
 
 
 def main():
@@ -35,16 +34,30 @@ def main():
         changes = detector.detect_changes(printer=True, showBodies=SHOW_METHOD_BODIES)
 
     else:
-        # Normal mode: Select Git-enabled project folder
-        print("Select the Git-enabled project folder:")
-        project_path = select_folder("Select the Git-enabled project folder")
-        if not project_path:
-            print("No folder selected. Exiting.")
-            return
+        # Retrieve project path
+        project_path = None
+        if USE_LAST_PROJECT_PATH:
+            project_path = get_last_project_path()
+            if project_path and os.path.isdir(project_path):
+                print(f"Using last project path: {project_path}")
+            else:
+                print("Last project path is invalid or missing. Please select a folder.")
+                project_path = None
 
-        if not is_git_repo(project_path):
-            print(f"The selected folder '{project_path}' is not a valid Git repository. Exiting.")
-            return
+        if not project_path:
+            # Prompt the user to select a folder
+            print("Select the Git-enabled project folder:")
+            project_path = select_folder("Select the Git-enabled project folder")
+            if not project_path:
+                print("No folder selected. Exiting.")
+                return
+
+            if not is_git_repo(project_path):
+                print(f"The selected folder '{project_path}' is not a valid Git repository. Exiting.")
+                return
+
+            # Save the selected project path
+            save_last_project_path(project_path)
 
         print(f"Project folder selected: {project_path}\n")
 
@@ -92,13 +105,11 @@ def main():
     if added_tests:
         print(f"\nNew tests were added but still haven't run: {added_tests}")
 
-
     if TESTING:
         # DependencyTracker is a class that creates an AST of a Java file to track all caller methods of a given list of methods
         dependencyTracker = DependencyTracker(find_path_to_folder(modified_path, "src"))
     else:
         dependencyTracker = DependencyTracker(find_path_to_folder(project_path, "src"))
-
 
     # Get all caller methods for the directly affected methods
     indirectly_affected_methods = dependencyTracker.provide_all_caller_methods(directly_affected_methods, printAST=PRINT_AST)
@@ -109,24 +120,21 @@ def main():
     all_possible_affected_methods = directly_affected_methods | indirectly_affected_methods
     print(f"All possible affected methods: {all_possible_affected_methods}\n")
 
-
     # Dynamic analysis
     changes_dynamic = {
         "directly_affected_methods": directly_affected_methods,
         "removed_methods": removed_methods,
-        "added_methods" : added_methods,
+        "added_methods": added_methods,
         "added_tests": added_tests,
-        "modified_tests":modified_tests,
-        "removed_tests": removed_tests
+        "modified_tests": modified_tests,
+        "removed_tests": removed_tests,
     }
     if TESTING:
-        dynamicAnalyzer =  DynamicJavaAnalyzer(modified_path,changes_dynamic)
+        dynamicAnalyzer = DynamicJavaAnalyzer(modified_path, changes_dynamic)
     else:
-        dynamicAnalyzer =  DynamicJavaAnalyzer(project_path,changes_dynamic)
+        dynamicAnalyzer = DynamicJavaAnalyzer(project_path, changes_dynamic)
 
     dynamicAnalyzer.analyze()
-
-
 
 
 if __name__ == "__main__":
