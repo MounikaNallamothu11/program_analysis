@@ -13,7 +13,6 @@ def find_path_to_folder(project_path, folder_name):
     Search for the `src` folder or the folder containing Java source files (.java) within the project directory.
     """
     for root, dirs, files in os.walk(project_path):
-        # Check if the folder is explicitly named "src"
         if os.path.basename(root) == folder_name:
             return root
         
@@ -21,7 +20,7 @@ def find_path_to_folder(project_path, folder_name):
         if any(file.endswith(".java") for file in files):
             return root  # Return the first folder containing Java files
 
-    return None  # No `src` folder or Java files found
+    return None  # No `folder_name` folder or Java files found
 
 
 def select_folder(prompt="Select the project folder"):
