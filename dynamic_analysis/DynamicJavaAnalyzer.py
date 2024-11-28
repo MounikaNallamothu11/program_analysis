@@ -4,11 +4,12 @@ import re
 import shutil
 import json
 import subprocess
+from main import find_path_to_folder
 
 class DynamicJavaAnalyzer:
     def __init__(self, project_path, static_analysis_results):
-        self.src_path = project_path + "/src"  # Path to the class that needs to be tested
-        self.test_path = project_path + "/test"  # Path to the JUnit test class
+        self.src_path = find_path_to_folder(project_path,"/src")  # Path to the class that needs to be tested
+        self.test_path = find_path_to_folder(project_path,"/test")  # Path to the JUnit test class
         self.project_path = project_path
         self.static_analysis_results = static_analysis_results
         self.original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"  # Path to the original JSON mapping
