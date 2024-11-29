@@ -1,4 +1,4 @@
-# program_analysis Dynamic Analysis 
+# Unit test auto rerun mapper
 
 1) You need to have MAVEN installed with its path on config.json
    
