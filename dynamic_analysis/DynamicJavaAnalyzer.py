@@ -18,7 +18,12 @@ class DynamicJavaAnalyzer:
 
         self.project_path = project_path
         self.static_analysis_results = static_analysis_results
-        self.original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"  # Path to the original JSON mapping
+
+        # Extract project name from the project path
+        project_name = os.path.basename(os.path.normpath(project_path))
+        
+        # Dynamically generate paths
+        self.tests_mapping_json = f"dynamic_analysis/outputs/{project_name}_test_mapping.json"
         self.test_answers = []
 
     def get_java_files(self, directory):
@@ -319,10 +324,10 @@ class DynamicJavaAnalyzer:
                 reversed_mapping[call].append(test_method)
 
         # Save or print the JSON
-        with open(self.original_json_mapping_path, "w") as json_file:
+        with open(self.tests_mapping_json, "w") as json_file:
             json.dump(reversed_mapping, json_file, indent=4)
 
-        print(f"Results saved to {self.original_json_mapping_path}")
+        print(f"Results saved to {self.tests_mapping_json}")
         print(json.dumps(reversed_mapping, indent=4))
 
 
@@ -330,9 +335,8 @@ class DynamicJavaAnalyzer:
         """
         Loads the existing JSON mapping (if it exists), or creates a new one.
         """
-        original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"
-        if os.path.exists(original_json_mapping_path):
-            with open(original_json_mapping_path, 'r') as f:
+        if os.path.exists(self.tests_mapping_json):
+            with open(self.tests_mapping_json, 'r') as f:
                 return json.load(f)
         else:
             print("No existing JSON mapping found, creating a new one.")
@@ -353,12 +357,8 @@ class DynamicJavaAnalyzer:
             # Backup original files
             self.backup_and_restore(all_java_files, backup=True)
 
-            # print(f"Current working directory: {os.getcwd()}")
-            original_json_mapping_path = "dynamic_analysis/dynamic_analysis_output.json"
-
             # Check if existing mapping is present
-            # print(original_json_mapping_path)
-            if os.path.exists(original_json_mapping_path):
+            if os.path.exists(self.tests_mapping_json):
                 print("Existing mapping found. Loading the mapping...")
                 existing_mapping = self.load_existing_mapping()
                 method_calls = {}
@@ -387,7 +387,7 @@ class DynamicJavaAnalyzer:
                                 del existing_mapping[method]
 
                     # Save updated mapping to JSON
-                    with open(original_json_mapping_path, "w") as json_file:
+                    with open(self.tests_mapping_json, "w") as json_file:
                         json.dump(existing_mapping, json_file, indent=4)
 
                     # Run new and modified tests
@@ -465,7 +465,7 @@ class DynamicJavaAnalyzer:
                                     del existing_mapping[method]
 
                         # Save the updated mapping to the JSON file
-                        with open(original_json_mapping_path, "w") as json_file:
+                        with open(self.tests_mapping_json, "w") as json_file:
                             json.dump(existing_mapping, json_file, indent=4)
 
                 print(f"\nThe affected test cases are: {self.test_answers}\n")
