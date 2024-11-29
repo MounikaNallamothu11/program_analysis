@@ -105,7 +105,7 @@ class DynamicJavaAnalyzer:
                     test_groups[class_name].append(test_name)
 
                 all_commands = "-Dtest="
-                
+
                 # Construct the Maven command to run specific test methods
                 for class_name, tests in test_groups.items():
                     self.test_answers.extend(test_methods)
@@ -464,8 +464,8 @@ class DynamicJavaAnalyzer:
                         with open(original_json_mapping_path, "w") as json_file:
                             json.dump(existing_mapping, json_file, indent=4)
 
-                print(f"The affected test cases are: {self.test_answers}")
-                print("Analysis complete.")
+                print(f"\nThe affected test cases are: {self.test_answers}\n")
+                print("\n\nAnalysis complete.\n\n")
                 self.cleanup()
                 return
 
