@@ -26,8 +26,8 @@ def main():
         print("\nTESTING mode enabled: Using java/original and java/modified folders for analysis.\n")
 
         # Paths for original and modified projects in TESTING mode
-        original_path = "java2/original"
-        modified_path = "java2/modified"
+        original_path = "java3/original"
+        modified_path = "java3/modified"
 
         if not os.path.isdir(original_path) or not os.path.isdir(modified_path):
             print(f"TESTING paths '{original_path}' or '{modified_path}' are invalid. Exiting.")

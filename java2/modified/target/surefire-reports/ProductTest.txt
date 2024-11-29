@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 Test set: ProductTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.008 s <<< FAILURE! - in ProductTest
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.005 s <<< FAILURE! - in ProductTest
 ProductTest.testProductCreation  Time elapsed: 0.002 s  <<< FAILURE!
 org.opentest4j.AssertionFailedError: expected: <15.0> but was: <16.5>
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:55)
@@ -9,7 +9,7 @@ org.opentest4j.AssertionFailedError: expected: <15.0> but was: <16.5>
 	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:70)
 	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:65)
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:885)
-	at ProductTest.testProductCreation(ProductTest.java:12)
+	at ProductTest.testProductCreation(ProductTest.java:13)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

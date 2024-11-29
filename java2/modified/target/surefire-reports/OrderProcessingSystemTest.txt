@@ -1,15 +1,15 @@
 -------------------------------------------------------------------------------
 Test set: OrderProcessingSystemTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.085 s <<< FAILURE! - in OrderProcessingSystemTest
-OrderProcessingSystemTest.testCalculateSubtotal  Time elapsed: 0.007 s  <<< FAILURE!
+Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.022 s <<< FAILURE! - in OrderProcessingSystemTest
+OrderProcessingSystemTest.testCalculateSubtotal  Time elapsed: 0.002 s  <<< FAILURE!
 org.opentest4j.AssertionFailedError: expected: <40.0> but was: <44.0>
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:55)
 	at org.junit.jupiter.api.AssertionUtils.failNotEqual(AssertionUtils.java:62)
 	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:70)
 	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:65)
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:885)
-	at OrderProcessingSystemTest.testCalculateSubtotal(OrderProcessingSystemTest.java:12)
+	at OrderProcessingSystemTest.testCalculateSubtotal(OrderProcessingSystemTest.java:13)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -81,14 +81,14 @@ org.opentest4j.AssertionFailedError: expected: <40.0> but was: <44.0>
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:595)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:581)
 
-OrderProcessingSystemTest.testCalculateDiscount  Time elapsed: 0.002 s  <<< FAILURE!
+OrderProcessingSystemTest.testCalculateDiscount  Time elapsed: 0.003 s  <<< FAILURE!
 org.opentest4j.AssertionFailedError: expected: <18.0> but was: <19.8>
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:55)
 	at org.junit.jupiter.api.AssertionUtils.failNotEqual(AssertionUtils.java:62)
 	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:70)
 	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:65)
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:885)
-	at OrderProcessingSystemTest.testCalculateDiscount(OrderProcessingSystemTest.java:20)
+	at OrderProcessingSystemTest.testCalculateDiscount(OrderProcessingSystemTest.java:21)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

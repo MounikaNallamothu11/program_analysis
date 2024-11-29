@@ -16,11 +16,11 @@ public class Invoice {
     @Override
     public String toString() {
         return "Invoice:\n" +
-               "Subtotal: $" + subtotal + "\n" +
-               "Discount: -$" + discount + "\n" +
-               "Tax: $" + tax + "\n" +
-               "Shipping: $" + shippingCost + "\n" +
-               "Total Amount: $" + totalAmount;
+                "Subtotal: $" + subtotal + "\n" +
+                "Discount: -$" + discount + "\n" +
+                "Tax: $" + tax + "\n" +
+                "Shipping: $" + shippingCost + "\n" +
+                "Total Amount: $" + totalAmount;
     }
 
     public double getSubtotal() {

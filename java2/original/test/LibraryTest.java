@@ -8,7 +8,7 @@ public class LibraryTest {
         Library library = new Library();
         Book book = new Book("1984", "George Orwell");
         library.addBook(book);
-        
+
         assertNotNull(library.findBookByTitle("1984"));
         assertEquals("George Orwell", library.findBookByTitle("1984").getAuthor());
     }

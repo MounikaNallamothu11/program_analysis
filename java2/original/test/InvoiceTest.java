@@ -8,7 +8,7 @@ public class InvoiceTest {
         OrderProcessingSystem orderSystem = new OrderProcessingSystem();
         orderSystem.addProductToOrder(new Product("Book A", 3, 60.0)); // $180
         Invoice invoice = orderSystem.generateInvoice();
-        
+
         assertEquals(180.0, invoice.getSubtotal(), "Subtotal is incorrect");
         assertEquals(18.0, invoice.getDiscount(), "Discount is incorrect");
         assertEquals(12.96, invoice.getTax(), "Tax is incorrect");

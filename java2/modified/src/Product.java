@@ -18,6 +18,6 @@ public class Product {
     }
 
     public double getPrice() {
-        return price * 1.1; //Adjusting to interest
+        return price * 1.1; //Adjusting to interest rate
     }
 }

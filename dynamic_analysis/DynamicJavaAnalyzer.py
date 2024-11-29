@@ -287,9 +287,11 @@ class DynamicJavaAnalyzer:
                 try:
                     self.restore_original_file(full_path, backup_path)
                 except Exception as e:
-                    print(f"Warning: Failed to restore {filename} from backup {backup_path}. Error: {e}")
+                    pass
+                    #print(f"Warning: Failed to restore {filename} from backup {backup_path}. Error: {e}")
             else:
-                print(f"Warning: Backup not found for {filename} at {backup_path}. Skipping restoration.")
+                pass
+                #print(f"Warning: Backup not found for {filename} at {backup_path}. Skipping restoration.")
 
         # Delete backup files
         for filename, full_path in all_java_files.items():
@@ -298,9 +300,11 @@ class DynamicJavaAnalyzer:
                 try:
                     self.delete_backup(backup_path)
                 except Exception as e:
-                    print(f"Warning: Failed to delete backup {backup_path}. Error: {e}")
+                    pass
+                    #print(f"Warning: Failed to delete backup {backup_path}. Error: {e}")
             else:
-                print(f"Warning: Backup already deleted or missing for {filename} at {backup_path}.")
+                pass
+                #print(f"Warning: Backup already deleted or missing for {filename} at {backup_path}.")
 
         print("Cleanup completed.")
 

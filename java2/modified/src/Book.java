@@ -18,7 +18,7 @@ public class Book {
     }
 
     public boolean isCheckedOut() {
-        return !isCheckedOut;
+        return isCheckedOut;
     }
 
     public void checkOut() {
