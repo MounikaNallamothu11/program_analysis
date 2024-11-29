@@ -1,2 +1,3 @@
 __pycache__/
 config.json
+dynamic_analysis/outputs/*
