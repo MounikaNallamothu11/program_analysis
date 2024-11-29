@@ -104,30 +104,23 @@ class DynamicJavaAnalyzer:
                     class_name, test_name = test.split('.')
                     test_groups[class_name].append(test_name)
 
-                command_logs = ""
-
+                all_commands = "-Dtest="
+                
                 # Construct the Maven command to run specific test methods
                 for class_name, tests in test_groups.items():
                     self.test_answers.extend(test_methods)
                     self.test_answers = list(dict.fromkeys(self.test_answers))
-                    combined_tests = "+".join(sorted(set(test_methods)))
-                    print(f"\nRunning required tests: {combined_tests}\n")
 
                     test_cases = "+".join(sorted(set(tests)))
-                    print(f"\nRunning test cases: {test_cases}\n")
+                    all_commands += f"{class_name}#{test_cases},"
 
-                    # mvn test -Dtest=CLASS_NAME1#METHOD_NAME1,CLASS_NAME2#METHOD_NAME2
+                all_commands = all_commands[:-1]  # Remove the trailing comma
+                print(all_commands)
 
-                    # tough: mvn cmd -Dtest=class1#method1+method2  ,  class2#method3+method4 , ..
- 
-                    # easy: mvn cmd -Dtest= class1#method1 , class1#method2 , class2#method3, class2#method4 , ...
+                maven_command = [self.maven_path, 'test', all_commands,'-Dmaven.test.failure.ignore=true']
 
-                    maven_command = [self.maven_path, 'test', f'-Dtest={class_name}#{test_cases}','-Dmaven.test.failure.ignore=true']
-
-                    # Run the Maven command and capture output
-                    command_logs += self.run_maven_command(maven_command)
-
-                return command_logs
+                # Run the Maven command and capture output
+                return self.run_maven_command(maven_command)
                     
             else:
                 # Default Maven command to run all tests
