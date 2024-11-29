@@ -1,0 +1,126 @@
+{
+    "Book.getAuthor": [
+        "BookTest.testBookCreation",
+        "LibraryTest.testAddBookToLibrary"
+    ],
+    "Book.getTitle": [
+        "BookTest.testBookCreation",
+        "LibraryTest.testFindBookByTitleNotFound",
+        "LibraryTest.testAddBookToLibrary",
+        "PatronTest.testReturnBookNotBorrowed",
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
+    ],
+    "Book.returnBook": [
+        "BookTest.testCheckOutAndReturn",
+        "PatronTest.testReturnBook",
+        "TransactionTest.testProcessReturnTransaction"
+    ],
+    "Book.isCheckedOut": [
+        "BookTest.testCheckOutAndReturn",
+        "PatronTest.testReturnBookNotBorrowed",
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
+    ],
+    "Book.checkOut": [
+        "BookTest.testCheckOutAndReturn",
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction"
+    ],
+    "Product.getPrice": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateSubtotal",
+        "OrderProcessingSystemTest.testCalculateDiscount",
+        "ProductTest.testProductCreation"
+    ],
+    "OrderProcessingSystem.calculateTax": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice"
+    ],
+    "Product.getQuantity": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateSubtotal",
+        "OrderProcessingSystemTest.testCalculateDiscount",
+        "ProductTest.testProductCreation"
+    ],
+    "Invoice.getSubtotal": [
+        "InvoiceTest.testInvoiceCalculation"
+    ],
+    "OrderProcessingSystem.calculateShippingCost": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice"
+    ],
+    "OrderProcessingSystem.calculateSubtotal": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateSubtotal",
+        "OrderProcessingSystemTest.testCalculateDiscount"
+    ],
+    "OrderProcessingSystem.addProductToOrder": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateSubtotal",
+        "OrderProcessingSystemTest.testCalculateDiscount"
+    ],
+    "OrderProcessingSystem.generateInvoice": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice"
+    ],
+    "OrderProcessingSystem.calculateDiscount": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateDiscount"
+    ],
+    "OrderProcessingSystem.if": [
+        "InvoiceTest.testInvoiceCalculation",
+        "OrderProcessingSystemTest.testGenerateInvoice",
+        "OrderProcessingSystemTest.testCalculateDiscount"
+    ],
+    "Library.addBook": [
+        "LibraryTest.testFindBookByTitleNotFound",
+        "LibraryTest.testAddBookToLibrary",
+        "PatronTest.testReturnBookNotBorrowed",
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
+    ],
+    "Library.findBookByTitle": [
+        "LibraryTest.testFindBookByTitleNotFound",
+        "LibraryTest.testAddBookToLibrary"
+    ],
+    "Patron.returnBook": [
+        "PatronTest.testReturnBookNotBorrowed",
+        "PatronTest.testReturnBook",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
+    ],
+    "Patron.getName": [
+        "PatronTest.testPatronCreation"
+    ],
+    "Patron.borrowBook": [
+        "PatronTest.testReturnBook",
+        "PatronTest.testBorrowBook",
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction"
+    ],
+    "Product.getName": [
+        "ProductTest.testProductCreation"
+    ],
+    "Transaction.process": [
+        "TransactionTest.testProcessCheckoutTransaction",
+        "TransactionTest.testProcessReturnTransaction",
+        "TransactionTest.testProcessTransactionNotAllowed"
+    ]
+}
