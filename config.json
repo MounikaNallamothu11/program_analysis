@@ -1,0 +1,10 @@
+{
+  "maven_path": "C:/Users/victo/Desktop/DTU/Autumn_24/Program Analysis/Project_Git/apache-maven-3.9.9/bin/mvn.cmd",
+  "testing": true,
+  "original_test_path": "java_tests/LibrarySystem/LS_original",
+  "modified_test_path": "java_tests/LibrarySystem/LS_modified",
+  "use_last_project_path": false,
+  "last_project_path": "C:/Users/victo/Desktop/DTU/Autumn_24/Program Analysis/Project_Git/BankAccountProject",
+  "print_ast": false,
+  "show_method_bodies": false
+}
