@@ -11,7 +11,36 @@ CONFIG_FILE = "config.json"
 
 import os
 
-import os
+def load_config(config_file="config.json"):
+    """
+    Load configuration data from a JSON file.
+
+    Args:
+        config_file (str): Path to the configuration file (default: "config.json").
+
+    Returns:
+        dict: Configuration data or an empty dictionary if the file does not exist.
+    """
+    if os.path.isfile(config_file):
+        with open(config_file, "r") as f:
+            try:
+                return json.load(f)
+            except json.JSONDecodeError:
+                print("Error: Configuration file is corrupted. Loading default settings.")
+    return {}
+
+
+def save_config(data, config_file="config.json"):
+    """
+    Save configuration data to a JSON file.
+
+    Args:
+        data (dict): The configuration data to save.
+        config_file (str): Path to the configuration file (default: "config.json").
+    """
+    with open(config_file, "w") as f:
+        json.dump(data, f, indent=4)
+
 
 def find_path_to_folder(project_path, folder_name):
     """

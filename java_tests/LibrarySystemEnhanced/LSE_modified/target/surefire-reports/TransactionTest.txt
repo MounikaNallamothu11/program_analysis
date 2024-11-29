@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
-Test set: InvoiceTest
+Test set: TransactionTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in InvoiceTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 s - in TransactionTest

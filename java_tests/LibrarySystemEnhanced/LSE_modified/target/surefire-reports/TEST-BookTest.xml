@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="PatronTest" time="0.017" tests="5" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="BookTest" time="0.064" tests="4" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.class.path" value="C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\java3\modified\target\test-classes;C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\java3\modified\target\classes;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\victo\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\victo\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
+    <property name="java.class.path" value="C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\LibrarySystemEnhanced\LSE_modified\target\test-classes;C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\LibrarySystemEnhanced\LSE_modified\target\classes;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\victo\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\victo\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
@@ -15,9 +15,9 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="BR"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-17\bin"/>
-    <property name="sun.java.command" value="C:\Users\victo\AppData\Local\Temp\surefire12237403185747213219\surefirebooter-20241129123250635_3.jar C:\Users\victo\AppData\Local\Temp\surefire12237403185747213219 2024-11-29T12-32-50_046-jvmRun1 surefire-20241129123250635_1tmp surefire_0-20241129123250635_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\victo\AppData\Local\Temp\surefire12960844373914541369\surefirebooter-20241129135638031_3.jar C:\Users\victo\AppData\Local\Temp\surefire12960844373914541369 2024-11-29T13-56-37_411-jvmRun1 surefire-20241129135638031_1tmp surefire_0-20241129135638031_2tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\java3\modified\target\test-classes;C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\java3\modified\target\classes;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\victo\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\victo\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
+    <property name="surefire.test.class.path" value="C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\LibrarySystemEnhanced\LSE_modified\target\test-classes;C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\LibrarySystemEnhanced\LSE_modified\target\classes;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\victo\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\victo\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\victo\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\victo\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="C:\Users\victo"/>
     <property name="user.language" value="pt"/>
@@ -25,12 +25,12 @@
     <property name="java.version.date" value="2024-01-16"/>
     <property name="java.home" value="C:\Program Files\Java\jdk-17"/>
     <property name="file.separator" value="\"/>
-    <property name="basedir" value="C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\java3\modified"/>
+    <property name="basedir" value="C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\LibrarySystemEnhanced\LSE_modified"/>
     <property name="java.vm.compressedOopsMode" value="32-bit"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\victo\AppData\Local\Temp\surefire12237403185747213219\surefirebooter-20241129123250635_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\victo\AppData\Local\Temp\surefire12960844373914541369\surefirebooter-20241129135638031_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.10+11-LTS-240"/>
@@ -44,7 +44,7 @@
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
     <property name="java.io.tmpdir" value="C:\Users\victo\AppData\Local\Temp\"/>
     <property name="java.version" value="17.0.10"/>
-    <property name="user.dir" value="C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\java3\modified"/>
+    <property name="user.dir" value="C:\Users\victo\Desktop\DTU\Autumn_24\Program Analysis\Project_Git\program_analysis\java_tests\LibrarySystemEnhanced\LSE_modified"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="sun.os.patch.level" value=""/>
@@ -57,74 +57,33 @@
     <property name="java.class.version" value="61.0"/>
     <property name="maven.test.failure.ignore" value="true"/>
   </properties>
-  <testcase name="testReturnBookNotBorrowed" classname="PatronTest" time="0.003">
-    <system-out><![CDATA[CALL PatronTest.testReturnBookNotBorrowed
-CALL Library.Library
+  <testcase name="testDoubleCheckout" classname="BookTest" time="0.037">
+    <system-out><![CDATA[CALL BookTest.testDoubleCheckout
 CALL Book.Book
-CALL Library.addBook
+CALL Book.checkOut
+CALL Book.isCheckedOut
+]]></system-out>
+  </testcase>
+  <testcase name="testReturnUnborrowedBook" classname="BookTest" time="0.001">
+    <system-out><![CDATA[CALL BookTest.testReturnUnborrowedBook
+CALL Book.Book
+CALL Book.isCheckedOut
+]]></system-out>
+  </testcase>
+  <testcase name="testBookCreation" classname="BookTest" time="0.003">
+    <system-out><![CDATA[CALL BookTest.testBookCreation
+CALL Book.Book
 CALL Book.getTitle
-CALL Patron.Patron
-CALL Patron.returnBook
-CALL Book.isCheckedOut
+CALL Book.getAuthor
 ]]></system-out>
   </testcase>
-  <testcase name="testPatronCreation" classname="PatronTest" time="0.001">
-    <system-out><![CDATA[CALL PatronTest.testPatronCreation
-CALL Patron.Patron
-CALL Patron.getName
-]]></system-out>
-  </testcase>
-  <testcase name="testBorrowBookLimit" classname="PatronTest" time="0.005">
-    <system-out><![CDATA[CALL PatronTest.testBorrowBookLimit
-CALL Patron.Patron
+  <testcase name="testCheckOutAndReturn" classname="BookTest" time="0.002">
+    <system-out><![CDATA[CALL BookTest.testCheckOutAndReturn
 CALL Book.Book
-CALL Patron.borrowBook
 CALL Book.isCheckedOut
 CALL Book.checkOut
-CALL Book.Book
-CALL Patron.borrowBook
 CALL Book.isCheckedOut
-CALL Book.checkOut
-CALL Book.Book
-CALL Patron.borrowBook
-CALL Book.isCheckedOut
-CALL Book.checkOut
-CALL Book.Book
-CALL Patron.borrowBook
-CALL Book.isCheckedOut
-CALL Book.checkOut
-CALL Book.Book
-CALL Patron.borrowBook
-CALL Book.isCheckedOut
-CALL Book.checkOut
-CALL Book.Book
-]]></system-out>
-  </testcase>
-  <testcase name="testReturnBook" classname="PatronTest" time="0.001">
-    <system-out><![CDATA[CALL PatronTest.testReturnBook
-CALL Library.Library
-CALL Book.Book
-CALL Library.addBook
-CALL Book.getTitle
-CALL Patron.Patron
-CALL Patron.borrowBook
-CALL Book.isCheckedOut
-CALL Book.checkOut
-CALL Patron.returnBook
 CALL Book.returnBook
-CALL Book.isCheckedOut
-]]></system-out>
-  </testcase>
-  <testcase name="testBorrowBook" classname="PatronTest" time="0.001">
-    <system-out><![CDATA[CALL PatronTest.testBorrowBook
-CALL Library.Library
-CALL Book.Book
-CALL Library.addBook
-CALL Book.getTitle
-CALL Patron.Patron
-CALL Patron.borrowBook
-CALL Book.isCheckedOut
-CALL Book.checkOut
 CALL Book.isCheckedOut
 ]]></system-out>
   </testcase>

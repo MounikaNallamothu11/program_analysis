@@ -1,19 +1,31 @@
 import os
 import tempfile
-import time
 from static_analysis.change_detector import ChangeDetector
 from static_analysis.dependency_tracker import DependencyTracker
 from dynamic_analysis.DynamicJavaAnalyzer import DynamicJavaAnalyzer
-from utils import find_path_to_folder, select_folder, is_git_repo, extract_previous_commit, save_last_project_path, get_last_project_path, measure_time
+from utils import (
+    find_path_to_folder,
+    select_folder,
+    is_git_repo,
+    extract_previous_commit,
+    save_last_project_path,
+    get_last_project_path,
+    measure_time,
+    load_config,
+    save_config,
+)
 
-# User flags
-TESTING = True
-PRINT_AST = False
-SHOW_METHOD_BODIES = False
-USE_LAST_PROJECT_PATH = False
-# AUTO_RERUN_AFFECTED_TESTS = True TODO: Implement this flag to automatically rerun affected tests after dynamic analysis
 
-# ADD YOUR MAVEN PATH IN config.json!
+## PLEASE ADD YOUR MAVEN PATH IN CONFIG.JSON FILE
+
+# Load user flags and paths from config.json
+config = load_config()
+TESTING = config.get("testing")
+PRINT_AST = config.get("print_ast")
+SHOW_METHOD_BODIES = config.get("show_method_bodies")
+USE_LAST_PROJECT_PATH = config.get("use_last_project_path")
+ORIGINAL_TEST_PATH = config.get("original_test_path")
+MODIFIED_TEST_PATH = config.get("modified_test_path")
 
 
 def main():
@@ -26,8 +38,8 @@ def main():
         print("\nTESTING mode enabled: Using java/original and java/modified folders for analysis.\n")
 
         # Paths for original and modified projects in TESTING mode
-        original_path = "java_tests/LibrarySystem/LS_original"
-        modified_path = "java_tests/LibrarySystem/LS_modified"
+        original_path = ORIGINAL_TEST_PATH
+        modified_path = MODIFIED_TEST_PATH
 
         if not os.path.isdir(original_path) or not os.path.isdir(modified_path):
             print(f"TESTING paths '{original_path}' or '{modified_path}' are invalid. Exiting.")
